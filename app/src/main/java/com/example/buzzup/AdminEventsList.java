@@ -1,9 +1,5 @@
 package com.example.buzzup;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,15 +7,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -35,6 +30,7 @@ public class AdminEventsList extends AppCompatActivity {
     AdminEventAdapter adminEventAdapter;
     Button logoutButton;
     Button createEventButton;
+    SwipeRefreshLayout pullToRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,19 +66,25 @@ public class AdminEventsList extends AppCompatActivity {
 
         db.collection("events")
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        originalEvents.clear();
-                        for(QueryDocumentSnapshot document: queryDocumentSnapshots){
-                            Event event = document.toObject(Event.class);
-                            originalEvents.add(event);
-                        }
-                        events.clear();
-                        events.addAll(originalEvents);
-                        adminEventAdapter.notifyDataSetChanged();
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    originalEvents.clear();
+                    for(QueryDocumentSnapshot document: queryDocumentSnapshots){
+                        Event event = document.toObject(Event.class);
+                        originalEvents.add(event);
                     }
+                    events.clear();
+                    events.addAll(originalEvents);
+                    adminEventAdapter.notifyDataSetChanged();
                 });
+
+
+        pullToRefresh = findViewById(R.id.pullToRefreshAdminList);
+
+        pullToRefresh= findViewById(R.id.pullToRefreshAdminList);
+        pullToRefresh.setOnRefreshListener(() -> {
+            refreshData(); // your code
+            pullToRefresh.setRefreshing(false);
+        });
 
         searchBarEvents.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -98,22 +100,36 @@ public class AdminEventsList extends AppCompatActivity {
             }
         });
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        logoutButton.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
 
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), AdminCreateNewEventActivity.class);
-                startActivity(intent);
-            }
+        createEventButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), AdminCreateNewEventActivity.class);
+            startActivity(intent);
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    void refreshData() {
+        db.collection("events")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    originalEvents.clear();
+                    for(QueryDocumentSnapshot document: queryDocumentSnapshots){
+                        Event event = document.toObject(Event.class);
+                        originalEvents.add(event);
+                    }
+                    events.clear();
+                    events.addAll(originalEvents);
+                    adminEventAdapter.notifyDataSetChanged();
+                });
     }
 }

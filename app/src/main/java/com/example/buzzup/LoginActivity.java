@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
+                                if (document.exists() && document.getData().containsKey("is_admin")) {
                                     boolean userIsAdmin = Boolean.parseBoolean(document.getData().get("is_admin").toString());
                                     if (userIsAdmin) {
                                         //            check if current user is admin
@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                         if (task.isSuccessful()) {
                                                             DocumentSnapshot document = task.getResult();
-                                                            if (document.exists()) {
+                                                            if (document.exists() && document.getData().containsKey("is_admin")) {
                                                                 boolean userIsAdmin = Boolean.parseBoolean(document.getData().get("is_admin").toString());
                                                                 if (userIsAdmin) {
                                                                     //            check if current user is admin
