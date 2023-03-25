@@ -1,6 +1,7 @@
 package com.example.buzzup;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
         TextView eventLikes = convertView.findViewById(R.id.eventLikes);
         Button likeButton= convertView.findViewById(R.id.eventLikeButton);
         Button rsvpButton= convertView.findViewById(R.id.eventRSVPButton);
+        Button viewButton = convertView.findViewById(R.id.eventViewButton);
 
         eventName.setText(filteredEvents.get(position).getName());
         eventDescription.setText(filteredEvents.get(position).getDescription());
@@ -68,6 +70,17 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
             @Override
             public void onClick(View view) {
                 Toast.makeText(finalConvertView.getContext(), "Implement RSVP", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(finalConvertView.getContext(), "Implement View", Toast.LENGTH_SHORT).show();
+                //Transition to new activity with event details
+                Intent i = new Intent(context,ViewEventActivity.class);
+                i.putExtra("index", position+"");
+                context.startActivity(i);
             }
         });
 
