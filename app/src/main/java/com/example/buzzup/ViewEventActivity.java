@@ -34,7 +34,6 @@ public class ViewEventActivity extends AppCompatActivity
 
         TextView eventName = (TextView)findViewById(R.id.event_name);
         TextView eventDescription = (TextView)findViewById(R.id.event_description);
-        TextView eventLikes = (TextView)findViewById(R.id.event_likes);
         TextView eventVenue = (TextView)findViewById(R.id.event_venue);
 
         db = FirebaseFirestore.getInstance();
@@ -49,10 +48,9 @@ public class ViewEventActivity extends AppCompatActivity
                             //get the event details
                             Log.d("View Event", document.getId() + " => " + document.getData());
                             //update UI
-                            eventName.setText("EVENT NAME : "+document.get("Name").toString());
-                            eventDescription.setText("EVENT DESCRIPTION : "+document.get("Description").toString());
-                            eventLikes.setText("EVENT LIKES : "+document.get("Likes").toString());
-                            eventVenue.setText("EVENT VENUE : "+document.get("Venue").toString());
+                            eventName.setText(document.get("Name").toString());
+                            eventDescription.setText(document.get("Description").toString());
+                            eventVenue.setText(document.get("Venue").toString());
                             break;
                         }
                         else
