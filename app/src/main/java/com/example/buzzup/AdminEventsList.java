@@ -6,7 +6,6 @@ import androidx.appcompat.widget.SearchView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,27 +21,25 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
 import java.util.ArrayList;
 
-public class EventsList extends AppCompatActivity {
+public class AdminEventsList extends AppCompatActivity {
 
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore db;
     SearchView searchBarEvents;
-    boolean userIsApproved = false;
-    boolean userIsAdmin = false;
     ListView eventsListView;
     ArrayList<Event> events;
     ArrayList<Event> originalEvents;
-    EventAdapter eventAdapter;
+    AdminEventAdapter adminEventAdapter;
     Button logoutButton;
+    Button createEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events_list);
+        setContentView(R.layout.activity_admin_events_list);
 
         auth = FirebaseAuth.getInstance();
         db =  FirebaseFirestore.getInstance();
@@ -55,19 +52,21 @@ public class EventsList extends AppCompatActivity {
             return;
         }
 
-        searchBarEvents = findViewById(R.id.eventsSearchBar);
+        searchBarEvents = findViewById(R.id.eventsSearchBarAdmin);
         searchBarEvents.clearFocus();
-        eventsListView = findViewById(R.id.eventsList);
+        eventsListView = findViewById(R.id.eventsListAdmin);
         eventsListView.setTextFilterEnabled(true);
         searchBarEvents.setSubmitButtonEnabled(true);
-        logoutButton = findViewById(R.id.eventsPageLogoutButton);
+        createEventButton = findViewById(R.id.createEventButtonAdmin);
+        createEventButton.setVisibility(View.VISIBLE);
+        logoutButton = findViewById(R.id.eventsPageLogoutButtonAdmin);
 
         Log.d("is_Admin", user.getEmail());
 
         events = new ArrayList<>();
         originalEvents =new ArrayList<>();
-        eventAdapter = new EventAdapter(this, R.layout.event_row, events);
-        eventsListView.setAdapter(eventAdapter);
+        adminEventAdapter = new AdminEventAdapter(this, R.layout.admin_event_row, events);
+        eventsListView.setAdapter(adminEventAdapter);
 
         db.collection("events")
                 .get()
@@ -81,7 +80,7 @@ public class EventsList extends AppCompatActivity {
                         }
                         events.clear();
                         events.addAll(originalEvents);
-                        eventAdapter.notifyDataSetChanged();
+                        adminEventAdapter.notifyDataSetChanged();
                     }
                 });
 
@@ -93,8 +92,8 @@ public class EventsList extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                eventAdapter.getFilter().filter(newText);
-                eventAdapter.setOriginalEvents(originalEvents);
+                adminEventAdapter.getFilter().filter(newText);
+                adminEventAdapter.setOriginalEvents(originalEvents);
                 return true;
             }
         });

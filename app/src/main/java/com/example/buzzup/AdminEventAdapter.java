@@ -2,7 +2,6 @@ package com.example.buzzup;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +17,13 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
-
+public class AdminEventAdapter extends ArrayAdapter<Event> implements Filterable {
     Context context;
     int resource;
-    ArrayList<Event>originalEvents;
+    ArrayList<Event> originalEvents;
     ArrayList<Event>filteredEvents;
 
-    public EventAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Event> events) {
+    public AdminEventAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Event> events) {
         super(context, resource, events);
 
         this.context = context;
@@ -41,54 +39,29 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
 
         convertView = layoutInflater.inflate(this.resource, parent, false);
 
-        TextView eventName = convertView.findViewById(R.id.eventName);
-        TextView eventDescription = convertView.findViewById(R.id.eventDescription);
-        TextView eventTime = convertView.findViewById(R.id.eventTime);
-        TextView eventVenue = convertView.findViewById(R.id.eventVenue);
-        TextView eventLikes = convertView.findViewById(R.id.eventLikes);
-        Button likeButton= convertView.findViewById(R.id.eventLikeButton);
-        Button rsvpButton= convertView.findViewById(R.id.eventRSVPButton);
-        Button viewButton = convertView.findViewById(R.id.eventViewButton);
+        TextView eventName = convertView.findViewById(R.id.eventNameAdmin);
+        TextView eventDescription = convertView.findViewById(R.id.eventDescriptionAdmin);
+        TextView eventTime = convertView.findViewById(R.id.eventTimeAdmin);
+        TextView eventVenue = convertView.findViewById(R.id.eventVenueAdmin);
+        Button viewButton = convertView.findViewById(R.id.eventViewButtonAdmin);
 
         eventName.setText(filteredEvents.get(position).getName());
         eventDescription.setText(filteredEvents.get(position).getDescription());
         eventTime.setText(filteredEvents.get(position).getTimeSimple());
         eventVenue.setText(filteredEvents.get(position).getVenue());
-        eventLikes.setText(Long.toString(filteredEvents.get(position).getLikes()));
-
-        likeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                long likes = filteredEvents.get(position).getLikes();
-                filteredEvents.get(position).setLikes(likes + 1);
-                eventLikes.setText(Long.toString(filteredEvents.get(position).getLikes()));
-            }
-        });
-
-        View finalConvertView = convertView;
-        rsvpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(finalConvertView.getContext(), "Implement RSVP", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Toast.makeText(finalConvertView.getContext(), "Implement View", Toast.LENGTH_SHORT).show();
                 //Transition to new activity with event details
-                Intent i = new Intent(context,ViewEventActivity.class);
+                Intent i = new Intent(context, ViewEventActivity.class);
                 i.putExtra("index", position+"");
                 context.startActivity(i);
             }
         });
 
         return convertView;
-    }
-
-    public void setOriginalEvents(ArrayList<Event> originalEvents){
-        this.originalEvents = originalEvents;
     }
 
     public Filter getFilter() {
@@ -131,5 +104,9 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
                 notifyDataSetChanged();
             }
         };
+    }
+
+    public void setOriginalEvents(ArrayList<Event> originalEvents) {
+        this.originalEvents = originalEvents;
     }
 }

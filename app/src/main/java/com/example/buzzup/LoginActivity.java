@@ -39,9 +39,32 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(),EventsList.class);
-            startActivity(intent);
-            finish();
+            db.collection("user").document(currentUser.getEmail())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    boolean userIsAdmin = Boolean.parseBoolean(document.getData().get("is_admin").toString());
+                                    if (userIsAdmin) {
+                                        //            check if current user is admin
+                                        Toast.makeText(LoginActivity.this, "Admin User signed in", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getApplicationContext(),AdminEventsList.class);
+                                        startActivity(intent);
+                                    } else {
+                                        // regular user
+                                        Toast.makeText(LoginActivity.this, "Regular User signed in", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getApplicationContext(),EventsList.class);
+                                        startActivity(intent);
+                                    }
+                                    finish();
+                                }
+                            }
+                        }
+                    });
+
         }
     }
 
@@ -62,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -94,9 +117,36 @@ public class LoginActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(LoginActivity.this, "Login success",
                                             Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(),EventsList.class);
-                                    startActivity(intent);
-                                    finish();
+
+//                                    check whether admin or user is logging in...
+                                    FirebaseUser currentUser = mAuth.getCurrentUser();
+                                    if(currentUser != null){
+                                        db.collection("user").document(currentUser.getEmail())
+                                                .get()
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            DocumentSnapshot document = task.getResult();
+                                                            if (document.exists()) {
+                                                                boolean userIsAdmin = Boolean.parseBoolean(document.getData().get("is_admin").toString());
+                                                                if (userIsAdmin) {
+                                                                    //            check if current user is admin
+                                                                    Toast.makeText(LoginActivity.this, "Admin User signed in", Toast.LENGTH_SHORT).show();
+                                                                    Intent intent = new Intent(getApplicationContext(),AdminEventsList.class);
+                                                                    startActivity(intent);
+                                                                } else {
+                                                                    // regular user
+                                                                    Toast.makeText(LoginActivity.this, "Regular User signed in", Toast.LENGTH_SHORT).show();
+                                                                    Intent intent = new Intent(getApplicationContext(),EventsList.class);
+                                                                    startActivity(intent);
+                                                                }
+                                                                finish();
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                    }
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Toast.makeText(LoginActivity.this, "Authentication failed.",
