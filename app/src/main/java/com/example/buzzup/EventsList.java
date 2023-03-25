@@ -2,20 +2,15 @@ package com.example.buzzup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,22 +22,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
 
 public class EventsList extends AppCompatActivity {
 
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore db;
-    EditText searchBarEvents;
+    SearchView searchBarEvents;
     boolean userIsApproved = false;
     boolean userIsAdmin = false;
     ListView eventsListView;
     ArrayList<Event> events;
+    ArrayList<Event> originalEvents;
     EventAdapter eventAdapter;
     Button logoutButton;
     Button createEventButton;
@@ -65,7 +58,10 @@ public class EventsList extends AppCompatActivity {
         }
 
         searchBarEvents = findViewById(R.id.eventsSearchBar);
+        searchBarEvents.clearFocus();
         eventsListView = findViewById(R.id.eventsList);
+        eventsListView.setTextFilterEnabled(true);
+        searchBarEvents.setSubmitButtonEnabled(true);
         createEventButton = findViewById(R.id.createEventButton);
         logoutButton = findViewById(R.id.eventsPageLogoutButton);
 
@@ -96,7 +92,9 @@ public class EventsList extends AppCompatActivity {
                     }
                 });
 
-        eventAdapter = new EventAdapter(this, R.layout.event_row, new ArrayList<Event>());
+        events = new ArrayList<>();
+        originalEvents =new ArrayList<>();
+        eventAdapter = new EventAdapter(this, R.layout.event_row, events);
         eventsListView.setAdapter(eventAdapter);
 
         db.collection("events")
@@ -104,34 +102,30 @@ public class EventsList extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        events = new ArrayList<Event>();
+                        originalEvents.clear();
                         for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                             Event event = document.toObject(Event.class);
-                            events.add(event);
+                            originalEvents.add(event);
                         }
-
-                        eventAdapter.clear();
-                        eventAdapter.addAll(events);
-//                        eventAdapter.addAllAgain(events);
+                        events.clear();
+                        events.addAll(originalEvents);
+                        eventAdapter.notifyDataSetChanged();
                     }
                 });
 
-//        searchBarEvents.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                (EventsList.this).eventAdapter.getFilter().filter(charSequence);
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
+        searchBarEvents.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                eventAdapter.getFilter().filter(newText);
+                eventAdapter.setOriginalEvents(originalEvents);
+                return true;
+            }
+        });
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
