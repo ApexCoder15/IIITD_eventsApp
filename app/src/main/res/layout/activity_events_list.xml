@@ -11,11 +11,14 @@
         android:orientation="vertical"
         android:layout_margin="5dp">
 
-        <EditText
+        <androidx.appcompat.widget.SearchView
             android:id="@+id/eventsSearchBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search for events..." />
+            android:layout_margin="8dp"
+            app:iconifiedByDefault="false"
+            app:queryHint = "Search for events..."/>
+
 
         <Button
             android:id="@+id/createEventButton"
