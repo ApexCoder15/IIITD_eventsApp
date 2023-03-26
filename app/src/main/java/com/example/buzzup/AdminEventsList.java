@@ -9,14 +9,18 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+
+import javax.annotation.Nullable;
 
 public class AdminEventsList extends AppCompatActivity {
 
@@ -30,7 +34,6 @@ public class AdminEventsList extends AppCompatActivity {
     AdminEventAdapter adminEventAdapter;
     Button logoutButton;
     Button createEventButton;
-    SwipeRefreshLayout pullToRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,13 +80,23 @@ public class AdminEventsList extends AppCompatActivity {
                     adminEventAdapter.notifyDataSetChanged();
                 });
 
-
-        pullToRefresh = findViewById(R.id.pullToRefreshAdminList);
-
-        pullToRefresh= findViewById(R.id.pullToRefreshAdminList);
-        pullToRefresh.setOnRefreshListener(() -> {
-            refreshData(); // your code
-            pullToRefresh.setRefreshing(false);
+        // Listen for changes to the event collection
+        db.collection("events").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("AdminEventsList", "Listen failed.", e);
+                    return;
+                }
+                originalEvents.clear();
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    Event event = document.toObject(Event.class);
+                    originalEvents.add(event);
+                    events.clear();
+                    events.addAll(originalEvents);
+                    adminEventAdapter.notifyDataSetChanged();
+                }
+            }
         });
 
         searchBarEvents.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -116,20 +129,5 @@ public class AdminEventsList extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    void refreshData() {
-        db.collection("events")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    originalEvents.clear();
-                    for(QueryDocumentSnapshot document: queryDocumentSnapshots){
-                        Event event = document.toObject(Event.class);
-                        originalEvents.add(event);
-                    }
-                    events.clear();
-                    events.addAll(originalEvents);
-                    adminEventAdapter.notifyDataSetChanged();
-                });
     }
 }

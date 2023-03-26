@@ -18,12 +18,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
+
+import javax.annotation.Nullable;
 
 public class EventsList extends AppCompatActivity {
 
@@ -31,8 +35,6 @@ public class EventsList extends AppCompatActivity {
     FirebaseUser user;
     FirebaseFirestore db;
     SearchView searchBarEvents;
-    boolean userIsApproved = false;
-    boolean userIsAdmin = false;
     ListView eventsListView;
     ArrayList<Event> events;
     ArrayList<Event> originalEvents;
@@ -84,6 +86,25 @@ public class EventsList extends AppCompatActivity {
                         eventAdapter.notifyDataSetChanged();
                     }
                 });
+
+        // Listen for changes to the event collection
+        db.collection("events").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("EventsList", "Listen failed.", e);
+                    return;
+                }
+                originalEvents.clear();
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    Event event = document.toObject(Event.class);
+                    originalEvents.add(event);
+                    events.clear();
+                    events.addAll(originalEvents);
+                    eventAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
         searchBarEvents.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
