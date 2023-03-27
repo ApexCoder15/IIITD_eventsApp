@@ -4,6 +4,7 @@ import android.provider.Telephony;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.text.SimpleDateFormat;
@@ -18,12 +19,12 @@ public class Event {
     Date Time;
     String Venue;
     GeoPoint VenueCoordinates;
-    ArrayList<String> Participants;
+    ArrayList<DocumentReference> Participants;
 
     public Event() {
     }
 
-    public Event(String name, String description, long likes, Date time, String venue, GeoPoint venueCoordinates, ArrayList<String> participants) {
+    public Event(String name, String description, long likes, Date time, String venue, GeoPoint venueCoordinates, ArrayList<DocumentReference> participants) {
         Name = name;
         Description = description;
         Likes = likes;
@@ -87,11 +88,11 @@ public class Event {
         VenueCoordinates = venueCoordinates;
     }
 
-    public ArrayList<String> getParticipants() {
+    public ArrayList<DocumentReference> getParticipants() {
         return Participants;
     }
 
-    public void setParticipants(ArrayList<String> participants) {
+    public void setParticipants(ArrayList<DocumentReference> participants) {
         Participants = participants;
     }
 }

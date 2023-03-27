@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,6 +41,9 @@ public class EventsList extends AppCompatActivity {
     Button logoutButton;
     Button createEventButton;
     Button likeButton;
+
+    ArrayList<DocumentReference> userLikedEvents;
+    ArrayList<DocumentReference> userRSVPEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +71,11 @@ public class EventsList extends AppCompatActivity {
 
         Log.d("is_Admin", user.getEmail());
 
+        events = new ArrayList<>();
+        originalEvents =new ArrayList<>();
+        eventAdapter = new EventAdapter(this, R.layout.event_row, events, auth, user, db);
+        eventsListView.setAdapter(eventAdapter);
+
         db.collection("user").document(user.getEmail())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -92,21 +101,19 @@ public class EventsList extends AppCompatActivity {
                     }
                 });
 
-        events = new ArrayList<>();
-        originalEvents =new ArrayList<>();
-        eventAdapter = new EventAdapter(this, R.layout.event_row, events);
-        eventsListView.setAdapter(eventAdapter);
-
         db.collection("events")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         originalEvents.clear();
+                        ArrayList<String> eventIDS = new ArrayList<>();
                         for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                             Event event = document.toObject(Event.class);
                             originalEvents.add(event);
+                            eventIDS.add(document.getId());
                         }
+                        eventAdapter.setEventIDS(eventIDS);
                         events.clear();
                         events.addAll(originalEvents);
                         eventAdapter.notifyDataSetChanged();
