@@ -1,9 +1,5 @@
 package com.example.buzzup;
 
-import android.provider.Telephony;
-
-import androidx.annotation.NonNull;
-
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -12,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Event {
-//    String id;
     String Name;
     String Description;
     long Likes;
