@@ -18,20 +18,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
 
@@ -157,19 +151,9 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
                                         DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
                                         transaction.update(eventDocRef, "Likes", finalLikes);
                                         return null;
-                                    });
-//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void unused) {
-//                                            Log.d("ADDED", "Liked Event added successfully.");
-//                                        }
-//                                    }).addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Log.d("ADDED", "Liked Event not added successfully.");
-//                                        }
-//                                    });
-//                                    Log.i("ADDED", "Liked Event removed " + db.collection("events").document(eventIDS.get(position)).getId() + " " + userLikedEvents.size());
+                                    }).addOnSuccessListener(unused -> Log.d("ADDED", "Liked Event added successfully."))
+                                            .addOnFailureListener(e -> Log.d("ADDED", "Liked Event not added successfully."));
+                                    Log.i("ADDED", "Liked Event removed " + db.collection("events").document(eventIDS.get(position)).getId() + " " + userLikedEvents.size());
                                 }
                                 else{
                                     // event not liked by user before, liking first time.
@@ -189,110 +173,83 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
                                         DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
                                         transaction.update(eventDocRef, "Likes", finalLikes);
                                         return null;
-                                    });
-//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void unused) {
-//                                            Log.d("ADDED", "Liked Event removed successfully.");
-//                                        }
-//                                    }).addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Log.d("ADDED", "Liked Event not removed successfully.");
-//                                        }
-//                                    });
+                                    }).addOnSuccessListener(unused -> Log.d("ADDED", "Liked Event removed successfully."))
+                                            .addOnFailureListener(e -> Log.d("ADDED", "Liked Event not removed successfully."));
 
-//                                    Log.i("ADDED", "Liked Event added " + db.collection("events").document(eventIDS.get(position)).getId() + " " + userLikedEvents.size());
+                                    Log.i("ADDED", "Liked Event added " + db.collection("events").document(eventIDS.get(position)).getId() + " " + userLikedEvents.size());
                                 }
                             }
                         }
                     });
         });
 
-        rsvpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, "RSVP button clicked", Toast.LENGTH_SHORT).show();
-                userRSVPedEvents = new ArrayList<>();
-                db.collection("user").document(user.getEmail())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    if (document.exists()) {
-                                        userRSVPedEvents = (ArrayList<DocumentReference>) document.getData().get("rsvpEvents");
+        rsvpButton.setOnClickListener(view -> {
+            Toast.makeText(context, "RSVP button clicked", Toast.LENGTH_SHORT).show();
+            userRSVPedEvents = new ArrayList<>();
+            db.collection("user").document(user.getEmail())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                userRSVPedEvents = (ArrayList<DocumentReference>) document.getData().get("rsvpEvents");
 
-                                        if(hasUserRSVPedToEvent(eventIDS.get(position))>=0){
-                                            Toast.makeText(finalConvertView.getContext(), "Undoing RSVP to event", Toast.LENGTH_SHORT).show();
-                                            userRSVPedEvents.remove(db.collection("events").document(eventIDS.get(position)));
-                                            rsvpButton.setText("RSVP");
+                                if(hasUserRSVPedToEvent(eventIDS.get(position))>=0){
+                                    Toast.makeText(finalConvertView.getContext(), "Undoing RSVP to event", Toast.LENGTH_SHORT).show();
+                                    userRSVPedEvents.remove(db.collection("events").document(eventIDS.get(position)));
+                                    rsvpButton.setText("RSVP");
 
-                                            db.runTransaction((Transaction.Function<Void>) transaction -> {
-                                                DocumentReference userDocRef = db.collection("user").document(auth.getCurrentUser().getEmail());
-                                                transaction.update(userDocRef, "rsvpEvents", userRSVPedEvents);
+                                    db.runTransaction((Transaction.Function<Void>) transaction -> {
+                                        DocumentReference userDocRef = db.collection("user").document(auth.getCurrentUser().getEmail());
+                                        transaction.update(userDocRef, "rsvpEvents", userRSVPedEvents);
 
-                                                DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
-                                                Log.i("Doc Ref", eventDocRef.getId());
+                                        DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
+                                        Log.i("Doc Ref", eventDocRef.getId());
 
-                                                eventDocRef.get()
-                                                        .addOnSuccessListener(documentSnapshot -> {
-                                                            if (documentSnapshot.exists()){
-                                                                ArrayList<DocumentReference> Participants = (ArrayList<DocumentReference>) documentSnapshot.get("Participants");
-                                                                Participants.remove(db.collection("user").document(auth.getCurrentUser().getEmail()));
+                                        eventDocRef.get()
+                                                .addOnSuccessListener(documentSnapshot -> {
+                                                    if (documentSnapshot.exists()){
+                                                        ArrayList<DocumentReference> Participants = (ArrayList<DocumentReference>) documentSnapshot.get("Participants");
+                                                        Participants.remove(db.collection("user").document(auth.getCurrentUser().getEmail()));
 
-                                                                eventDocRef.update("Participants", Participants)
-                                                                        .addOnSuccessListener(unused -> Log.d("UPDATE", "Document updated."));
-                                                            }
-                                                        });
-                                                return null;
-                                            });
-//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void unused) {
-//                                                    Log.d("ADDED", "RSVP Event removed successfully.");
-//                                                }
-//                                            }).addOnFailureListener(new OnFailureListener() {
-//                                                @Override
-//                                                public void onFailure(@NonNull Exception e) {
-//                                                    Log.d("ADDED", "RSVP Event not removed successfully.");
-//                                                }
-//                                            });
+                                                        eventDocRef.update("Participants", Participants)
+                                                                .addOnSuccessListener(unused -> Log.d("UPDATE", "Document updated."));
+                                                    }
+                                                });
+                                        return null;
+                                    }).addOnSuccessListener(unused -> Log.d("ADDED", "RSVP Event removed successfully."))
+                                            .addOnFailureListener(e -> Log.d("ADDED", "RSVP Event not removed successfully."));
 
-                                        }
-                                        else{
-                                            Toast.makeText(finalConvertView.getContext(), "RSVPing to event", Toast.LENGTH_SHORT).show();
-                                            userRSVPedEvents.add(db.collection("events").document(eventIDS.get(position)));
-                                            rsvpButton.setText("unRSVP");
+                                }
+                                else{
+                                    Toast.makeText(finalConvertView.getContext(), "RSVPing to event", Toast.LENGTH_SHORT).show();
+                                    userRSVPedEvents.add(db.collection("events").document(eventIDS.get(position)));
+                                    rsvpButton.setText("unRSVP");
 
-                                            db.runTransaction((Transaction.Function<Void>) transaction -> {
-                                                DocumentReference userDocRef = db.collection("user").document(auth.getCurrentUser().getEmail());
-                                                transaction.update(userDocRef, "rsvpEvents", userRSVPedEvents);
+                                    db.runTransaction((Transaction.Function<Void>) transaction -> {
+                                        DocumentReference userDocRef = db.collection("user").document(auth.getCurrentUser().getEmail());
+                                        transaction.update(userDocRef, "rsvpEvents", userRSVPedEvents);
 
-                                                DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
-                                                Log.i("Doc Ref", eventDocRef.getId());
+                                        DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
+                                        Log.i("Doc Ref", eventDocRef.getId());
 
-                                                eventDocRef.get()
-                                                        .addOnSuccessListener(documentSnapshot -> {
-                                                            if (documentSnapshot.exists()){
-                                                                ArrayList<DocumentReference> Participants = (ArrayList<DocumentReference>) documentSnapshot.get("Participants");
-                                                                Participants.add(db.collection("user").document(auth.getCurrentUser().getEmail()));
+                                        eventDocRef.get()
+                                                .addOnSuccessListener(documentSnapshot -> {
+                                                    if (documentSnapshot.exists()){
+                                                        ArrayList<DocumentReference> Participants = (ArrayList<DocumentReference>) documentSnapshot.get("Participants");
+                                                        Participants.add(db.collection("user").document(auth.getCurrentUser().getEmail()));
 
-                                                                eventDocRef.update("Participants", Participants)
-                                                                        .addOnSuccessListener(unused -> Log.d("UPDATE", "Document updated."));
-                                                            }
-                                                        });
-                                                return null;
-                                            });
-//                                            .addOnSuccessListener(unused -> Log.d("ADDED", "RSVP Event added successfully."))
-//                                            .addOnFailureListener(e -> Log.d("ADDED", "RSVP Event not added successfully."));
-                                        }
-                                    }
+                                                        eventDocRef.update("Participants", Participants)
+                                                                .addOnSuccessListener(unused -> Log.d("UPDATE", "Document updated."));
+                                                    }
+                                                });
+                                        return null;
+                                    }).addOnSuccessListener(unused -> Log.d("ADDED", "RSVP Event added successfully."))
+                                            .addOnFailureListener(e -> Log.d("ADDED", "RSVP Event not added successfully."));
                                 }
                             }
-                        });
-            }
+                        }
+                    });
         });
 
         viewButton.setOnClickListener(view -> {
