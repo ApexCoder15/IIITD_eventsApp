@@ -1,34 +1,21 @@
 package com.example.buzzup;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 
 import java.util.ArrayList;
-
-import javax.annotation.Nullable;
 
 public class EventsList extends AppCompatActivity {
 
@@ -42,6 +29,8 @@ public class EventsList extends AppCompatActivity {
     EventAdapter eventAdapter;
     Button logoutButton;
     Button createEventButton;
+
+    final String TAG = "EventsList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +65,13 @@ public class EventsList extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     originalEvents.clear();
-//                    ArrayList<String> eventIDS = new ArrayList<>();
+                    ArrayList<String> eventIDS = new ArrayList<>();
                     for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                         Event event = document.toObject(Event.class);
                         originalEvents.add(event);
-//                        eventIDS.add(document.getId());
+                        eventIDS.add(document.getId());
                     }
-//                    eventAdapter.setEventIDS(eventIDS);
+                    eventAdapter.setEventIDS(eventIDS);
                     events.clear();
                     events.addAll(originalEvents);
                     eventAdapter.notifyDataSetChanged();
@@ -90,20 +79,20 @@ public class EventsList extends AppCompatActivity {
 
 
         // Listen for changes to the event collection
-//        db.collection("events").addSnapshotListener((querySnapshot, e) -> {
-//            if (e != null) {
-//                Log.w("EventsList", "Listen failed.", e);
-//                return;
-//            }
-//            originalEvents.clear();
-//            for (QueryDocumentSnapshot document : querySnapshot) {
-//                Event event = document.toObject(Event.class);
-//                originalEvents.add(event);
-//                events.clear();
-//                events.addAll(originalEvents);
-//                eventAdapter.notifyDataSetChanged();
-//            }
-//        });
+        db.collection("events").addSnapshotListener((querySnapshot, e) -> {
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e);
+                return;
+            }
+            originalEvents.clear();
+            for (QueryDocumentSnapshot document : querySnapshot) {
+                Event event = document.toObject(Event.class);
+                originalEvents.add(event);
+                events.clear();
+                events.addAll(originalEvents);
+                eventAdapter.notifyDataSetChanged();
+            }
+        });
 
         // search bar functionality
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
