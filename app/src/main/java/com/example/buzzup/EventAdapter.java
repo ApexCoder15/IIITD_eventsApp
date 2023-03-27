@@ -354,8 +354,8 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
         return convertView;
     }
 
-    public void setOriginalEvents(ArrayList<Event> eventList){
-        this.originalEvents = eventList;
+    public void setOriginalEvents(ArrayList<Event> originalEvents){
+        this.originalEvents = originalEvents;
     }
 
     public void setEventIDS(ArrayList<String> eventids){eventIDS = eventids;}
