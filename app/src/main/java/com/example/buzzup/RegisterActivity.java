@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword, editTextName;
+    TextInputEditText editTextEmail, editTextPassword;
     CheckBox checkBoxIsAdmin;
     Button buttonReg;
     FirebaseAuth mAuth;
@@ -51,7 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        editTextName = findViewById(R.id.username);
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonReg = findViewById(R.id.btn_register);
@@ -70,17 +69,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         buttonReg.setOnClickListener(view -> {
             progressBar.setVisibility(View.VISIBLE);
-            String email, password, name;
+            String email, password;
             Boolean is_admin;
-            name = String.valueOf(editTextName.getText());
             email = String.valueOf(editTextEmail.getText());
             password = String.valueOf(editTextPassword.getText());
             is_admin = checkBoxIsAdmin.isChecked();
 
-            if (TextUtils.isEmpty(name)){
-                Toast.makeText(RegisterActivity.this, "Enter Name", Toast.LENGTH_SHORT).show();
-                return;
-            }
             if (TextUtils.isEmpty(email)){
                 Toast.makeText(RegisterActivity.this,"Enter Email",Toast.LENGTH_SHORT).show();
                 return;
@@ -96,7 +90,6 @@ public class RegisterActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
                             Map<String,Object> data = new HashMap<>();
-                            data.put("name", name);
                             data.put("is_admin",is_admin);
                             data.put("is_approved",false);
                             data.put("likedEvents", new ArrayList<>());
