@@ -44,7 +44,7 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
     ArrayList<Event>originalEvents;
     ArrayList<Event>filteredEvents;
     ArrayList<DocumentReference> userLikedEvents;
-    ArrayList<DocumentReference> userRSVPEvents;
+    ArrayList<DocumentReference> userRSVPedEvents;
     ArrayList<String> eventIDS;
 
     public EventAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Event> events, FirebaseAuth auth, FirebaseUser user, FirebaseFirestore db) {
@@ -59,26 +59,25 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
         this.user = user;
     }
 
-//    public int userRSVPedEvent(String EventID){
-//
-//        for(int i = 0; i<userRSVPEvents.size();i++){
-//            if (userRSVPEvents.get(i).getId().equals(EventID)){
-//                return i;
-//            }
-//        }
-//        return -1;
-//    }
-//
-//    public int userLikedEvent(String EventID){
-//
-//        for(int i = 0; i<userLikedEvents.size();i++){
-////            Log.d("TEMP", userLikedEvents.get(i).ge)
-//            if (userLikedEvents.get(i).getId().equals(EventID)){
-//                return i;
-//            }
-//        }
-//        return -1;
-//    }
+    // has the user RSVPed to given event
+    public int hasUserRSVPedToEvent(String EventID){
+        for(int i = 0; i < userRSVPedEvents.size(); i++){
+            if (userRSVPedEvents.get(i).getId().equals(EventID)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // has the user Liked given event
+    public int hasUserLikedEvent(String EventID){
+        for(int i = 0; i < userLikedEvents.size();i++){
+            if (userLikedEvents.get(i).getId().equals(EventID)){
+                return i;
+            }
+        }
+        return -1;
+    }
 
     @NonNull
     @Override
@@ -102,121 +101,113 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
         eventTime.setText(filteredEvents.get(position).getTimeSimple());
         eventVenue.setText(filteredEvents.get(position).getVenue());
 
-//        long likes = max(0,filteredEvents.get(position).getLikes());
-//        eventLikes.setText(Long.toString(likes));
+        long likes = max(0,filteredEvents.get(position).getLikes());
+        eventLikes.setText(Long.toString(likes));
 
 //        db.collection("user").document(user.getEmail())
 //                .get()
-//                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            DocumentSnapshot document = task.getResult();
-//                            if (document.exists()) {
-//                                userRSVPEvents = (ArrayList<DocumentReference>) document.getData().get("rsvpEvents");
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        DocumentSnapshot document = task.getResult();
+//                        if (document.exists()) {
+//                            userRSVPedEvents = (ArrayList<DocumentReference>) document.getData().get("rsvpEvents");
 //
-//                                if(userRSVPedEvent(eventIDS.get(position)) >= 0){
-//                                    rsvpButton.setText("unRSVP");
-//                                } else{
-//                                    rsvpButton.setText("RSVP");
-//                                }
-//
+//                            if(hasUserRSVPedToEvent(eventIDS.get(position)) >= 0){
+//                                rsvpButton.setText("unRSVP");
+//                            } else{
+//                                rsvpButton.setText("RSVP");
 //                            }
+//
 //                        }
 //                    }
 //                });
 
         View finalConvertView = convertView;
-        likeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, "Like Button Clicked", Toast.LENGTH_SHORT).show();
-//                userLikedEvents = new ArrayList<>();
-//
-//                db.collection("user").document(user.getEmail())
-//                        .get()
-//                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                if (task.isSuccessful()) {
-//                                    DocumentSnapshot document = task.getResult();
-//                                    if (document.exists()) {
-//                                        userLikedEvents = (ArrayList<DocumentReference>) document.getData().get("likedEvents");
-//
-//                                        if(userLikedEvent(eventIDS.get(position)) >=0 ){
-//                                            int index = userLikedEvent(eventIDS.get(position));
-//                                            Toast.makeText(finalConvertView.getContext(), "Unliking event", Toast.LENGTH_SHORT).show();
-//
-//                                            long likes = max(0,filteredEvents.get(position).getLikes());
-//                                            likes -= 1;
-//                                            eventLikes.setText(Long.toString(likes));
-//                                            filteredEvents.get(position).setLikes(likes);
-//                                            userLikedEvents.remove(index);
-//
-//                                            long finalLikes = likes;
-//                                            db.runTransaction(new Transaction.Function<Void>() {
-//                                                @Nullable
-//                                                @Override
-//                                                public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-//                                                    DocumentReference userDocRef = db.collection("user").document(auth.getCurrentUser().getEmail());
-//                                                    transaction.update(userDocRef, "likedEvents", userLikedEvents);
-//
-//                                                    DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
-//                                                    transaction.update(eventDocRef, "Likes", finalLikes);
-//                                                    return null;
-//                                                }
-//                                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void unused) {
-//                                                    Log.d("ADDED", "Liked Event added successfully.");
-//                                                }
-//                                            }).addOnFailureListener(new OnFailureListener() {
-//                                                @Override
-//                                                public void onFailure(@NonNull Exception e) {
-//                                                    Log.d("ADDED", "Liked Event not added successfully.");
-//                                                }
-//                                            });
-//                                            Log.i("ADDED", "Liked Event removed " + db.collection("events").document(eventIDS.get(position)).getId() + " " + userLikedEvents.size());
+
+        // like the event on clicking like button
+        // on clicking one more time, unlike the event
+        likeButton.setOnClickListener(view -> {
+            Toast.makeText(context, "Like Button Clicked", Toast.LENGTH_SHORT).show();
+            userLikedEvents = new ArrayList<>();
+
+            db.collection("user").document(user.getEmail())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                // get all events like by current user
+                                userLikedEvents = (ArrayList<DocumentReference>) document.getData().get("likedEvents");
+
+                                if(hasUserLikedEvent(eventIDS.get(position)) >=0){
+                                    int index = hasUserLikedEvent(eventIDS.get(position));
+                                    Toast.makeText(finalConvertView.getContext(), "Unliking event", Toast.LENGTH_SHORT).show();
+
+                                    long likes1 = max(0,filteredEvents.get(position).getLikes());
+                                    likes1 -= 1;
+                                    eventLikes.setText(Long.toString(likes1));
+                                    filteredEvents.get(position).setLikes(likes1);
+                                    userLikedEvents.remove(index);
+
+                                    long finalLikes = likes1;
+//                                    update on backend
+                                    db.runTransaction((Transaction.Function<Void>) transaction -> {
+                                        DocumentReference userDocRef = db.collection("user").document(auth.getCurrentUser().getEmail());
+                                        transaction.update(userDocRef, "likedEvents", userLikedEvents);
+
+                                        DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
+                                        transaction.update(eventDocRef, "Likes", finalLikes);
+                                        return null;
+                                    });
+//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void unused) {
+//                                            Log.d("ADDED", "Liked Event added successfully.");
 //                                        }
-//                                        else{
-//                                            Toast.makeText(finalConvertView.getContext(), "Liking event", Toast.LENGTH_SHORT).show();
-//                                            long likes = max(0,filteredEvents.get(position).getLikes());
-//                                            likes += 1;
-//                                            eventLikes.setText(Long.toString(likes));
-//                                            filteredEvents.get(position).setLikes(likes);
-//                                            userLikedEvents.add(db.collection("events").document(eventIDS.get(position)));
-//
-//                                            long finalLikes = likes;
-//                                            db.runTransaction(new Transaction.Function<Void>() {
-//                                                @Nullable
-//                                                @Override
-//                                                public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-//                                                    DocumentReference userDocRef = db.collection("user").document(auth.getCurrentUser().getEmail());
-//                                                    transaction.update(userDocRef, "likedEvents", userLikedEvents);
-//
-//                                                    DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
-//                                                    transaction.update(eventDocRef, "Likes", finalLikes);
-//                                                    return null;
-//                                                }
-//                                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void unused) {
-//                                                    Log.d("ADDED", "Liked Event removed successfully.");
-//                                                }
-//                                            }).addOnFailureListener(new OnFailureListener() {
-//                                                @Override
-//                                                public void onFailure(@NonNull Exception e) {
-//                                                    Log.d("ADDED", "Liked Event not removed successfully.");
-//                                                }
-//                                            });
-//
-//                                            Log.i("ADDED", "Liked Event added " + db.collection("events").document(eventIDS.get(position)).getId() + " " + userLikedEvents.size());
+//                                    }).addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(@NonNull Exception e) {
+//                                            Log.d("ADDED", "Liked Event not added successfully.");
 //                                        }
-//                                    }
-//                                }
-//                            }
-//                        });
-            }
+//                                    });
+//                                    Log.i("ADDED", "Liked Event removed " + db.collection("events").document(eventIDS.get(position)).getId() + " " + userLikedEvents.size());
+                                }
+                                else{
+                                    // event not liked by user before, liking first time.
+                                    Toast.makeText(finalConvertView.getContext(), "Liking event", Toast.LENGTH_SHORT).show();
+                                    long likes1 = max(0,filteredEvents.get(position).getLikes());
+                                    likes1 += 1;
+                                    eventLikes.setText(Long.toString(likes1));
+                                    filteredEvents.get(position).setLikes(likes1);
+                                    userLikedEvents.add(db.collection("events").document(eventIDS.get(position)));
+
+                                    long finalLikes = likes1;
+//                                    update backend
+                                    db.runTransaction((Transaction.Function<Void>) transaction -> {
+                                        DocumentReference userDocRef = db.collection("user").document(auth.getCurrentUser().getEmail());
+                                        transaction.update(userDocRef, "likedEvents", userLikedEvents);
+
+                                        DocumentReference eventDocRef = db.collection("events").document(eventIDS.get(position));
+                                        transaction.update(eventDocRef, "Likes", finalLikes);
+                                        return null;
+                                    });
+//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void unused) {
+//                                            Log.d("ADDED", "Liked Event removed successfully.");
+//                                        }
+//                                    }).addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(@NonNull Exception e) {
+//                                            Log.d("ADDED", "Liked Event not removed successfully.");
+//                                        }
+//                                    });
+
+//                                    Log.i("ADDED", "Liked Event added " + db.collection("events").document(eventIDS.get(position)).getId() + " " + userLikedEvents.size());
+                                }
+                            }
+                        }
+                    });
         });
 
         rsvpButton.setOnClickListener(new View.OnClickListener() {
@@ -338,13 +329,10 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
             }
         });
 
-        viewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(context,ViewEventActivity.class);
-                i.putExtra("index", Integer.toString(position));
-                context.startActivity(i);
-            }
+        viewButton.setOnClickListener(view -> {
+            Intent i = new Intent(context,ViewEventActivity.class);
+            i.putExtra("index", Integer.toString(position));
+            context.startActivity(i);
         });
 
         return convertView;
@@ -354,7 +342,7 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
         this.originalEvents = originalEvents;
     }
 
-//    public void setEventIDS(ArrayList<String> eventids){eventIDS = eventids;}
+    public void setEventIDS(ArrayList<String> eventids){eventIDS = eventids;}
 
     public Filter getFilter() {
         return new Filter() {
