@@ -101,8 +101,7 @@ public class EventsList extends AppCompatActivity {
                 });
 
         events = new ArrayList<>();
-        originalEvents =new ArrayList<>();
-        eventAdapter = new EventAdapter(this, R.layout.event_row, events);
+        originalEvents =new ArrayList<>();MeventAdapter = new EventAdapter(this, R.layout.event_row, events, auth, user, db);
         eventsListView.setAdapter(eventAdapter);
 
         db.collection("events")

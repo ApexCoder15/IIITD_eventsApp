@@ -2,7 +2,6 @@ package com.example.buzzup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,8 +22,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -73,6 +74,9 @@ public class AdminCreateNewEventActivity extends AppCompatActivity {
                 data.put("Name",mEventTitle.getText().toString());
                 data.put("Description",mEventDesc.getText().toString());
                 data.put("Venue", mEventLoc.getText().toString());
+                data.put("Likes", 0);
+                data.put("Participants", new ArrayList<>());
+                data.put("VenueCoordinates", new GeoPoint(0,0));
 
                 // refer : https://stackoverflow.com/questions/54927084/get-timestamp-from-datepicker-and-timepicker
                 int year = mEventDate.getYear();
