@@ -27,13 +27,15 @@ public class AdminEventsList extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore db;
-    SearchView searchBarEvents;
+    SearchView searchBar;
     ListView eventsListView;
     ArrayList<Event> events;
     ArrayList<Event> originalEvents;
     AdminEventAdapter adminEventAdapter;
     Button logoutButton;
     Button createEventButton;
+
+    final String TAG = "AdminEventsList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,19 +50,16 @@ public class AdminEventsList extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
             startActivity(intent);
             finish();
-            return;
         }
 
-        searchBarEvents = findViewById(R.id.eventsSearchBarAdmin);
-        searchBarEvents.clearFocus();
+        searchBar = findViewById(R.id.eventsSearchBarAdmin);
+        searchBar.clearFocus();
         eventsListView = findViewById(R.id.eventsListAdmin);
         eventsListView.setTextFilterEnabled(true);
-        searchBarEvents.setSubmitButtonEnabled(true);
+        searchBar.setSubmitButtonEnabled(true);
         createEventButton = findViewById(R.id.createEventButtonAdmin);
         createEventButton.setVisibility(View.VISIBLE);
         logoutButton = findViewById(R.id.eventsPageLogoutButtonAdmin);
-
-        Log.d("is_Admin", user.getEmail());
 
         events = new ArrayList<>();
         originalEvents =new ArrayList<>();
@@ -85,7 +84,7 @@ public class AdminEventsList extends AppCompatActivity {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w("AdminEventsList", "Listen failed.", e);
+                    Log.w(TAG, "Listen failed.", e);
                     return;
                 }
                 originalEvents.clear();
@@ -99,7 +98,8 @@ public class AdminEventsList extends AppCompatActivity {
             }
         });
 
-        searchBarEvents.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        // search bar functionality
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;

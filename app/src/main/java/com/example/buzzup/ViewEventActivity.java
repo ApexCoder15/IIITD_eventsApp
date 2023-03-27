@@ -12,15 +12,20 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Text;
 
+import java.sql.Time;
+import java.util.Date;
+
 public class ViewEventActivity extends AppCompatActivity
 {
     FirebaseFirestore db;
+    final String TAG = "ViewEventActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -28,40 +33,38 @@ public class ViewEventActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event);
 
+        db = FirebaseFirestore.getInstance();
+
         Intent intent = getIntent();
         int index = Integer.parseInt(intent.getStringExtra("index"));
-        Log.d("View Event", "index is : "+index);
 
         TextView eventName = (TextView)findViewById(R.id.event_name);
         TextView eventDescription = (TextView)findViewById(R.id.event_description);
         TextView eventVenue = (TextView)findViewById(R.id.event_venue);
+        TextView eventDateTime = (TextView)findViewById(R.id.event_datetime);
 
-        db = FirebaseFirestore.getInstance();
-        db.collection("events").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    int count = 0;
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (count==index)
-                        {
-                            //get the event details
-                            Log.d("View Event", document.getId() + " => " + document.getData());
-                            //update UI
-                            eventName.setText(document.get("Name").toString());
-                            eventDescription.setText(document.get("Description").toString());
-                            eventVenue.setText(document.get("Venue").toString());
-                            break;
-                        }
-                        else
-                        {
-                            count += 1;
-                        }
-
+        db.collection("events").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                int count = 0;
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    if (count==index)
+                    {
+                        // get the event details and update UI
+                        eventName.setText(document.get("Name").toString());
+                        eventDescription.setText(document.get("Description").toString());
+                        eventVenue.setText(document.get("Venue").toString());
+                        Timestamp ts = (Timestamp) document.get("Time");
+                        eventDateTime.setText(ts.toDate().toString());
+                        break;
                     }
-                } else {
-                    Log.d("View Event", "Error getting documents: ", task.getException());
+                    else
+                    {
+                        count += 1;
+                    }
+
                 }
+            } else {
+                Log.e(TAG, "Error getting documents: ", task.getException());
             }
         });
     }

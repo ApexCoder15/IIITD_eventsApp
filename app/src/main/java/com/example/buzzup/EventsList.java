@@ -35,19 +35,13 @@ public class EventsList extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore db;
-    SearchView searchBarEvents;
-    boolean userIsApproved = false;
-    boolean userIsAdmin = false;
+    SearchView searchBar;
     ListView eventsListView;
     ArrayList<Event> events;
     ArrayList<Event> originalEvents;
     EventAdapter eventAdapter;
     Button logoutButton;
     Button createEventButton;
-    Button likeButton;
-
-    ArrayList<DocumentReference> userLikedEvents;
-    ArrayList<DocumentReference> userRSVPEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,46 +53,19 @@ public class EventsList extends AppCompatActivity {
         user = auth.getCurrentUser();
 
         if(user == null){
-            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
-            return;
         }
 
-        searchBarEvents = findViewById(R.id.eventsSearchBar);
-        searchBarEvents.clearFocus();
+        searchBar = findViewById(R.id.eventsSearchBar);
+        searchBar.clearFocus();
         eventsListView = findViewById(R.id.eventsList);
         eventsListView.setTextFilterEnabled(true);
-        searchBarEvents.setSubmitButtonEnabled(true);
+        searchBar.setSubmitButtonEnabled(true);
+
         createEventButton = findViewById(R.id.createEventButton);
         logoutButton = findViewById(R.id.eventsPageLogoutButton);
-
-        Log.d("is_Admin", user.getEmail());
-
-        db.collection("user").document(user.getEmail())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        Log.d("is_Admin", "is_admin");
-                        if (task.isSuccessful()) {
-                            Log.d("is_Admin", "is_admin");
-                            DocumentSnapshot document = task.getResult();
-                            Log.d("is_Admin", document.toString());
-                            if (document.exists()) {
-                                Log.d("is_Admin", document.getData().get("is_admin") + " " );
-                                Log.d("is_Admin", document.getData().get("is_approved") + " " );
-
-                                userIsAdmin = Boolean.valueOf(document.getData().get("is_admin").toString());
-                                userIsApproved = Boolean.valueOf(document.getData().get("is_approved").toString());
-                            }
-
-                            if (userIsAdmin && userIsApproved){
-                                createEventButton.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    }
-                });
 
         events = new ArrayList<>();
         originalEvents =new ArrayList<>();
@@ -107,43 +74,39 @@ public class EventsList extends AppCompatActivity {
 
         db.collection("events")
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        originalEvents.clear();
-                        ArrayList<String> eventIDS = new ArrayList<>();
-                        for(QueryDocumentSnapshot document: queryDocumentSnapshots){
-                            Event event = document.toObject(Event.class);
-                            originalEvents.add(event);
-                            eventIDS.add(document.getId());
-                        }
-                        eventAdapter.setEventIDS(eventIDS);
-                        events.clear();
-                        events.addAll(originalEvents);
-                        eventAdapter.notifyDataSetChanged();
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    originalEvents.clear();
+//                    ArrayList<String> eventIDS = new ArrayList<>();
+                    for(QueryDocumentSnapshot document: queryDocumentSnapshots){
+                        Event event = document.toObject(Event.class);
+                        originalEvents.add(event);
+//                        eventIDS.add(document.getId());
                     }
-                });
-
-        // Listen for changes to the event collection
-        db.collection("events").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w("EventsList", "Listen failed.", e);
-                    return;
-                }
-                originalEvents.clear();
-                for (QueryDocumentSnapshot document : querySnapshot) {
-                    Event event = document.toObject(Event.class);
-                    originalEvents.add(event);
+//                    eventAdapter.setEventIDS(eventIDS);
                     events.clear();
                     events.addAll(originalEvents);
                     eventAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+                });
 
-        searchBarEvents.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+        // Listen for changes to the event collection
+//        db.collection("events").addSnapshotListener((querySnapshot, e) -> {
+//            if (e != null) {
+//                Log.w("EventsList", "Listen failed.", e);
+//                return;
+//            }
+//            originalEvents.clear();
+//            for (QueryDocumentSnapshot document : querySnapshot) {
+//                Event event = document.toObject(Event.class);
+//                originalEvents.add(event);
+//                events.clear();
+//                events.addAll(originalEvents);
+//                eventAdapter.notifyDataSetChanged();
+//            }
+//        });
+
+        // search bar functionality
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -166,6 +129,5 @@ public class EventsList extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 }

@@ -50,15 +50,10 @@ public class AdminEventAdapter extends ArrayAdapter<Event> implements Filterable
         eventTime.setText(filteredEvents.get(position).getTimeSimple());
         eventVenue.setText(filteredEvents.get(position).getVenue());
 
-        viewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Toast.makeText(finalConvertView.getContext(), "Implement View", Toast.LENGTH_SHORT).show();
-                //Transition to new activity with event details
-                Intent i = new Intent(context, ViewEventActivity.class);
-                i.putExtra("index", position+"");
-                context.startActivity(i);
-            }
+        viewButton.setOnClickListener(view -> {
+            Intent i = new Intent(context, ViewEventActivity.class);
+            i.putExtra("index", Integer.toString(position));
+            context.startActivity(i);
         });
 
         return convertView;
@@ -80,18 +75,18 @@ public class AdminEventAdapter extends ArrayAdapter<Event> implements Filterable
                 final ArrayList<Event> list = originalEvents;
 
                 int count = list.size();
-                final ArrayList<Event> nlist = new ArrayList<Event>(count);
+                final ArrayList<Event> nList = new ArrayList<>(count);
 
                 String filterableString ;
 
                 for (int i = 0; i < count; i++) {
                     filterableString = list.get(i).getName();
                     if (filterableString.toLowerCase().contains(filterString)) {
-                        nlist.add(list.get(i));
+                        nList.add(list.get(i));
                     }
                 }
-                results.values = nlist;
-                results.count = nlist.size();
+                results.values = nList;
+                results.count = nList.size();
 
                 return results;
             }
