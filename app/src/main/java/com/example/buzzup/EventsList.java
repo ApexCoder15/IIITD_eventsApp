@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,11 +36,18 @@ public class EventsList extends AppCompatActivity {
     FirebaseUser user;
     FirebaseFirestore db;
     SearchView searchBarEvents;
+    boolean userIsApproved = false;
+    boolean userIsAdmin = false;
     ListView eventsListView;
     ArrayList<Event> events;
     ArrayList<Event> originalEvents;
     EventAdapter eventAdapter;
     Button logoutButton;
+    Button createEventButton;
+    Button likeButton;
+
+    ArrayList<DocumentReference> userLikedEvents;
+    ArrayList<DocumentReference> userRSVPEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +70,35 @@ public class EventsList extends AppCompatActivity {
         eventsListView = findViewById(R.id.eventsList);
         eventsListView.setTextFilterEnabled(true);
         searchBarEvents.setSubmitButtonEnabled(true);
+        createEventButton = findViewById(R.id.createEventButton);
         logoutButton = findViewById(R.id.eventsPageLogoutButton);
 
         Log.d("is_Admin", user.getEmail());
+
+        db.collection("user").document(user.getEmail())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        Log.d("is_Admin", "is_admin");
+                        if (task.isSuccessful()) {
+                            Log.d("is_Admin", "is_admin");
+                            DocumentSnapshot document = task.getResult();
+                            Log.d("is_Admin", document.toString());
+                            if (document.exists()) {
+                                Log.d("is_Admin", document.getData().get("is_admin") + " " );
+                                Log.d("is_Admin", document.getData().get("is_approved") + " " );
+
+                                userIsAdmin = Boolean.valueOf(document.getData().get("is_admin").toString());
+                                userIsApproved = Boolean.valueOf(document.getData().get("is_approved").toString());
+                            }
+
+                            if (userIsAdmin && userIsApproved){
+                                createEventButton.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
 
         events = new ArrayList<>();
         originalEvents =new ArrayList<>();
@@ -77,10 +111,13 @@ public class EventsList extends AppCompatActivity {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         originalEvents.clear();
+                        ArrayList<String> eventIDS = new ArrayList<>();
                         for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                             Event event = document.toObject(Event.class);
                             originalEvents.add(event);
+                            eventIDS.add(document.getId());
                         }
+                        eventAdapter.setEventIDS(eventIDS);
                         events.clear();
                         events.addAll(originalEvents);
                         eventAdapter.notifyDataSetChanged();

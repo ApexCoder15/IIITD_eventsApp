@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,6 +104,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     Map<String,Object> data = new HashMap<>();
                                     data.put("is_admin",is_admin);
                                     data.put("is_approved",false);
+                                    data.put("likedEvents", new ArrayList<>());
+                                    data.put("rsvpEvents", new ArrayList<>());
                                     db.collection("user").document(email).set(data);
                                     Toast.makeText(RegisterActivity.this, "Account created.",
                                             Toast.LENGTH_SHORT).show();
