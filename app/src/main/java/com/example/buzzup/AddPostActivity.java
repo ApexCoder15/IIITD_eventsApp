@@ -78,14 +78,6 @@ public class AddPostActivity extends AppCompatActivity {
             email = currentUser.getEmail();
         }
 
-//        db.collection("posts")
-//                .get()
-//                .addOnSuccessListener(queryDocumentSnapshots -> {
-//                    for(QueryDocumentSnapshot document: queryDocumentSnapshots){
-////                        Event event = document.toObject(Event.class);
-//                    }
-//                });
-
         cameraPermissions = new String[]{Manifest.permission.CAMERA};
 
         pd = new ProgressDialog(this);
@@ -100,7 +92,6 @@ public class AddPostActivity extends AppCompatActivity {
         selectImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("AddPOst","image");
                 showImagePickDialog();
             }
         });
