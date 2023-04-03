@@ -71,8 +71,8 @@ public class EventsList extends AppCompatActivity {
                         originalEvents.add(event);
                         eventIDS.add(document.getId());
                     }
-                    events.clear();
                     eventAdapter.setEventIDS(eventIDS);
+                    events.clear();
                     events.addAll(originalEvents);
                     eventAdapter.notifyDataSetChanged();
                 });
