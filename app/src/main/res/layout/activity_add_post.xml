@@ -37,6 +37,8 @@
         <!--        ImageView : input post image-->
         <ImageView
             android:id="@+id/pImageIv"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
