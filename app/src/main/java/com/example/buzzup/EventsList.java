@@ -28,7 +28,7 @@ public class EventsList extends AppCompatActivity {
     ArrayList<Event> originalEvents;
     EventAdapter eventAdapter;
     Button logoutButton;
-    Button createEventButton;
+    Button feedButton;
 
     final String TAG = "EventsList";
 
@@ -53,8 +53,8 @@ public class EventsList extends AppCompatActivity {
         eventsListView.setTextFilterEnabled(true);
         searchBar.setSubmitButtonEnabled(true);
 
-        createEventButton = findViewById(R.id.createEventButton);
         logoutButton = findViewById(R.id.eventsPageLogoutButton);
+        feedButton = findViewById(R.id.feedButton);
 
         events = new ArrayList<>();
         originalEvents =new ArrayList<>();
@@ -71,8 +71,8 @@ public class EventsList extends AppCompatActivity {
                         originalEvents.add(event);
                         eventIDS.add(document.getId());
                     }
-                    eventAdapter.setEventIDS(eventIDS);
                     events.clear();
+                    eventAdapter.setEventIDS(eventIDS);
                     events.addAll(originalEvents);
                     eventAdapter.notifyDataSetChanged();
                 });
@@ -116,6 +116,14 @@ public class EventsList extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        feedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
+                startActivity(intent);
             }
         });
     }
