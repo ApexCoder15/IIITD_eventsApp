@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -52,7 +53,7 @@ public class AddPostActivity extends AppCompatActivity {
     ImageView imgIv;
     Button uploadBtn;
     Button selectImgBtn;
-    String email;
+    String email, uName;
 
     String[] cameraPermissions;
     Uri image_uri = null;
@@ -76,6 +77,16 @@ public class AddPostActivity extends AppCompatActivity {
         FirebaseUser currentUser = auth.getCurrentUser();
         if(currentUser != null){
             email = currentUser.getEmail();
+            db.collection("user").document(currentUser.getEmail())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists() && document.getData().containsKey("name")) {
+                                uName = document.getData().get("name").toString();
+                            }
+                        }
+                    });
         }
 
         cameraPermissions = new String[]{Manifest.permission.CAMERA};
@@ -142,6 +153,7 @@ public class AddPostActivity extends AppCompatActivity {
                         data.put("description", description);
                         data.put("imageUrl",downloadUri);
                         data.put("time",timestamp);
+                        data.put("uName",uName);
                         db.collection("posts").document(timestamp).set(data);
                         pd.dismiss();
                         Toast.makeText(getApplicationContext(), "Post Published!", Toast.LENGTH_SHORT).show();
@@ -165,6 +177,7 @@ public class AddPostActivity extends AppCompatActivity {
             data.put("description", description);
             data.put("imageUrl","noImage");
             data.put("time",timestamp);
+            data.put("uName",uName);
             db.collection("posts").document(timestamp).set(data);
             pd.dismiss();
             Toast.makeText(getApplicationContext(), "Post Published!", Toast.LENGTH_SHORT).show();

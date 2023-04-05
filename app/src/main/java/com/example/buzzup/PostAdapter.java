@@ -1,7 +1,6 @@
 package com.example.buzzup;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,9 +83,7 @@ public class PostAdapter extends  RecyclerView.Adapter<PostAdapter.MyHolder> {
         holder.commentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,PostDetailActivity.class);
-                intent.putExtra("postId",id);
-                context.startActivity(intent);
+
             }
         });
 
