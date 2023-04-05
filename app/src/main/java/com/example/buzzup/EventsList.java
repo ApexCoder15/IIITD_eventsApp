@@ -26,9 +26,10 @@ public class EventsList extends AppCompatActivity {
     ListView eventsListView;
     ArrayList<Event> events;
     ArrayList<Event> originalEvents;
+    ArrayList<String> eventIDS;
     EventAdapter eventAdapter;
     Button logoutButton;
-    Button createEventButton;
+    Button feedButton;
 
     final String TAG = "EventsList";
 
@@ -53,11 +54,12 @@ public class EventsList extends AppCompatActivity {
         eventsListView.setTextFilterEnabled(true);
         searchBar.setSubmitButtonEnabled(true);
 
-        createEventButton = findViewById(R.id.createEventButton);
         logoutButton = findViewById(R.id.eventsPageLogoutButton);
+        feedButton = findViewById(R.id.feedButton);
 
         events = new ArrayList<>();
         originalEvents =new ArrayList<>();
+        eventIDS = new ArrayList<>();
         eventAdapter = new EventAdapter(this, R.layout.event_row, events, auth, user, db);
         eventsListView.setAdapter(eventAdapter);
 
@@ -65,7 +67,6 @@ public class EventsList extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     originalEvents.clear();
-                    ArrayList<String> eventIDS = new ArrayList<>();
                     for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                         Event event = document.toObject(Event.class);
                         originalEvents.add(event);
@@ -88,6 +89,8 @@ public class EventsList extends AppCompatActivity {
             for (QueryDocumentSnapshot document : querySnapshot) {
                 Event event = document.toObject(Event.class);
                 originalEvents.add(event);
+                eventIDS.add(document.getId());
+                eventAdapter.setEventIDS(eventIDS);
                 events.clear();
                 events.addAll(originalEvents);
                 eventAdapter.notifyDataSetChanged();
@@ -116,6 +119,14 @@ public class EventsList extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        feedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
+                startActivity(intent);
             }
         });
     }

@@ -98,4 +98,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="feed">feed</string>
+    <string name="button">Button</string>
+    <string name="upload">Upload</string>
 </resources>
