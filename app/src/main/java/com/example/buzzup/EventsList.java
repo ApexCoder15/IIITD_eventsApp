@@ -26,6 +26,7 @@ public class EventsList extends AppCompatActivity {
     ListView eventsListView;
     ArrayList<Event> events;
     ArrayList<Event> originalEvents;
+    ArrayList<String> eventIDS;
     EventAdapter eventAdapter;
     Button logoutButton;
     Button feedButton;
@@ -58,6 +59,7 @@ public class EventsList extends AppCompatActivity {
 
         events = new ArrayList<>();
         originalEvents =new ArrayList<>();
+        eventIDS = new ArrayList<>();
         eventAdapter = new EventAdapter(this, R.layout.event_row, events, auth, user, db);
         eventsListView.setAdapter(eventAdapter);
 
@@ -65,7 +67,6 @@ public class EventsList extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     originalEvents.clear();
-                    ArrayList<String> eventIDS = new ArrayList<>();
                     for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                         Event event = document.toObject(Event.class);
                         originalEvents.add(event);
@@ -88,6 +89,8 @@ public class EventsList extends AppCompatActivity {
             for (QueryDocumentSnapshot document : querySnapshot) {
                 Event event = document.toObject(Event.class);
                 originalEvents.add(event);
+                eventIDS.add(document.getId());
+                eventAdapter.setEventIDS(eventIDS);
                 events.clear();
                 events.addAll(originalEvents);
                 eventAdapter.notifyDataSetChanged();
