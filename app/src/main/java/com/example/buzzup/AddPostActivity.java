@@ -154,6 +154,7 @@ public class AddPostActivity extends AppCompatActivity {
                         data.put("imageUrl",downloadUri);
                         data.put("time",timestamp);
                         data.put("uName",uName);
+                        data.put("comments", new ArrayList<>());
                         db.collection("posts").document(timestamp).set(data);
                         pd.dismiss();
                         Toast.makeText(getApplicationContext(), "Post Published!", Toast.LENGTH_SHORT).show();
@@ -178,6 +179,7 @@ public class AddPostActivity extends AppCompatActivity {
             data.put("imageUrl","noImage");
             data.put("time",timestamp);
             data.put("uName",uName);
+            data.put("comments", new ArrayList<>());
             db.collection("posts").document(timestamp).set(data);
             pd.dismiss();
             Toast.makeText(getApplicationContext(), "Post Published!", Toast.LENGTH_SHORT).show();
