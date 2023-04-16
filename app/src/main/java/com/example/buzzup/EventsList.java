@@ -1,5 +1,6 @@
 package com.example.buzzup;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,9 +31,11 @@ public class EventsList extends AppCompatActivity {
     EventAdapter eventAdapter;
     Button logoutButton;
     Button feedButton;
+    Button cal;
 
     final String TAG = "EventsList";
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +59,7 @@ public class EventsList extends AppCompatActivity {
 
         logoutButton = findViewById(R.id.eventsPageLogoutButton);
         feedButton = findViewById(R.id.feedButton);
+        cal = findViewById(R.id.cal);
 
         events = new ArrayList<>();
         originalEvents =new ArrayList<>();
@@ -127,6 +131,15 @@ public class EventsList extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        // For Calendar
+        cal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent it = new Intent(getApplicationContext(), calendar.class);
+                startActivity(it);
             }
         });
     }
