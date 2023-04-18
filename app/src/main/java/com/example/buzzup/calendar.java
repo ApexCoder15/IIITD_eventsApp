@@ -69,6 +69,9 @@ public class calendar extends AppCompatActivity {
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override   //i-year, i1-month, i2-day
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
+                events.clear();
+                eventIDS.clear();
+                originalEvents.clear();
                 i1 += 1;
                 String i_st = String.valueOf(i);
                 String i1_st = String.valueOf(i1);
