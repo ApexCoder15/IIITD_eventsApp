@@ -24,8 +24,8 @@
         android:layout_below="@+id/cal">
         <ListView
             android:id="@+id/eventsList"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:dividerHeight="5dp"/>
         <TextView

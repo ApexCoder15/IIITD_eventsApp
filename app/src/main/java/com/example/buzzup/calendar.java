@@ -37,6 +37,8 @@ public class calendar extends AppCompatActivity {
     EventAdapter eventAdapter;
     TextView test_tv;
     Context ct;
+    ArrayList<Event> originalEvents;
+    ArrayList<String> eventIDS;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -59,7 +61,11 @@ public class calendar extends AppCompatActivity {
             finish();
         }
         events = new ArrayList<>();
+        originalEvents = new ArrayList<>();
+        eventIDS = new ArrayList<>();
         calendar = (CalendarView) findViewById(R.id.cal);
+        eventAdapter = new EventAdapter(ct, R.layout.event_row, events, auth, user, db);
+        eventsListView.setAdapter(eventAdapter);
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override   //i-year, i1-month, i2-day
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
@@ -88,12 +94,14 @@ public class calendar extends AppCompatActivity {
                                 String formatted_date = formatter.format(dt);
                                 if(selected_date.equals(formatted_date)){
                                     //do stuff
-                                    events.add(doc.toObject(Event.class));
+                                    Event event = doc.toObject(Event.class);
+                                    events.add(event);
+                                    originalEvents.add(event);
+                                    eventIDS.add(doc.getId());
                                 }
-
                             }
-                            eventAdapter = new EventAdapter(ct, R.layout.event_row, events, auth, user, db);
-                            eventsListView.setAdapter(eventAdapter);
+                            eventAdapter.setEventIDS(eventIDS);
+                            eventAdapter.notifyDataSetChanged();
                         }
                         else{
                             Toast.makeText(calendar.this, "Error getting data", Toast.LENGTH_SHORT).show();
