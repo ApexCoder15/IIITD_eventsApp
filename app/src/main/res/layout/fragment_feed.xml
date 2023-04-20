@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/fragment_feed"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/feed_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:iconifiedByDefault="false"
+        app:queryHint = "Search posts..."/>
+
+    <Button
+        android:id="@+id/add_post_to_feed_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Feed Fragment"
-        android:textColor="#43a047"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:drawableLeft="@drawable/ic_create_purple"
+        android:layout_margin="8dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/white"
+        android:drawablePadding="5dp"
+        android:text="CREATE A POST"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/feed_rv"
+        android:layout_margin="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="650dp" />
+
+</LinearLayout>
