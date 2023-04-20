@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+// TODO add logoout button and user profile button somewhere
 public class BaseActivity extends AppCompatActivity implements BottomNavigationView
         .OnNavigationItemSelectedListener {
     BottomNavigationView bottomNavigationView;
