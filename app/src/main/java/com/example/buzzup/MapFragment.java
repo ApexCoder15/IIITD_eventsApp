@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -75,7 +76,19 @@ public class MapFragment extends Fragment {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for(QueryDocumentSnapshot document: queryDocumentSnapshots){
-                        Event event = document.toObject(Event.class);
+                        //                        Event event = document.toObject(Event.class);
+
+                        Event event = new Event();
+                        // set each field manually
+                        event.setName((String)document.get("Name"));
+                        event.setDescription((String)document.get("Description"));
+                        event.setLikes((Long)document.get("Likes"));
+                        event.setParticipants((ArrayList<DocumentReference>)document.get("Participants"));
+//                        event.setTime((Date)document.get("Time"));
+                        event.setVenue((String)document.get("Venue"));
+                        event.setVenueCoordinates((com.google.firebase.firestore.GeoPoint)document.get("VenueCoordinates"));
+//                        event.setImageUrls((List<String>)document.get("ImageUrls"));
+
                         addMarkerToMap(event);
                         eventsNearMeList.addView(insertEventNearMeCard(event));
                     }

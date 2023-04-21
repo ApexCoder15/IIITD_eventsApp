@@ -6,88 +6,107 @@ import com.google.firebase.firestore.GeoPoint;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Event {
-    String Name;
-    String Description;
-    long Likes;
-    Date Time;
-    String Venue;
-    GeoPoint VenueCoordinates;
-    ArrayList<DocumentReference> Participants;
+    String name, description, venue;
+    List<String> imageUrls;
+    long likes;
+    Date time;
+    GeoPoint venueCoordinates;
+    List<DocumentReference> participants;
+    List<String> tags;
 
     public Event() {
     }
 
-    public Event(String name, String description, long likes, Date time, String venue, GeoPoint venueCoordinates, ArrayList<DocumentReference> participants) {
-        Name = name;
-        Description = description;
-        Likes = likes;
-        Time = time;
-        Venue = venue;
-        VenueCoordinates = venueCoordinates;
-        Participants = participants;
+    public Event(String name, String description, long likes, Date time, String venue, GeoPoint venueCoordinates, List<DocumentReference> participants, List<String> imageUrls, List<String> tags) {
+        this.name = name;
+        this.description = description;
+        this.likes = likes;
+        this.time = time;
+        this.venue = venue;
+        this.venueCoordinates = venueCoordinates;
+        this.participants = participants;
+        this.imageUrls = imageUrls;
+        this.tags = tags;
     }
 
     public String getName() {
-        return Name;
+        return this.name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getDescription() {
-        return Description;
+        return this.description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public long getLikes() {
-        return Likes;
+        return this.likes;
     }
 
     public void setLikes(long likes) {
-        Likes = likes;
+        this.likes = likes;
     }
 
     public Date getTime() {
-        return Time;
+        return this.time;
     }
 
     public String getTimeSimple(){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss");
-        String date = simpleDateFormat.format(Time);
+        String date = simpleDateFormat.format(this.time);
         return date.substring(0, date.length()-3);
     }
 
     public void setTime(Date time) {
-        Time = time;
+        this.time = time;
     }
 
     public String getVenue() {
-        return Venue;
+        return this.venue;
     }
 
     public void setVenue(String venue) {
-        Venue = venue;
+        this.venue = venue;
     }
 
     public GeoPoint getVenueCoordinates() {
-        return VenueCoordinates;
+        return this.venueCoordinates;
     }
 
     public void setVenueCoordinates(GeoPoint venueCoordinates) {
-        VenueCoordinates = venueCoordinates;
+        this.venueCoordinates = venueCoordinates;
     }
 
-    public ArrayList<DocumentReference> getParticipants() {
-        return Participants;
+    public List<DocumentReference> getParticipants() {
+        return this.participants;
     }
 
     public void setParticipants(ArrayList<DocumentReference> participants) {
-        Participants = participants;
+        this.participants = participants;
+    }
+
+    public List<String> getImageUrls() {
+        return this.imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
+    }
+
+    public List<String> getTags() {
+        return this.tags;
+    }
+
+    public void setTag(List<String> tags) {
+        this.tags = tags;
     }
 }

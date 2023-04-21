@@ -13,22 +13,27 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class EventsFragment extends Fragment {
 
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore db;
+
     SearchView searchBar;
     ListView eventsListView;
 
     ArrayList<Event> events;
     ArrayList<Event> originalEvents;
-    ArrayList<String> eventIDS;
+    ArrayList<String> eventIDs;
     EventAdapter eventAdapter;
 
     public EventsFragment() {
@@ -59,7 +64,7 @@ public class EventsFragment extends Fragment {
 
         events = new ArrayList<>();
         originalEvents =new ArrayList<>();
-        eventIDS = new ArrayList<>();
+        eventIDs = new ArrayList<>();
         eventAdapter = new EventAdapter(getActivity(), R.layout.event_row, events, auth, user, db);
         eventsListView.setAdapter(eventAdapter);
 
@@ -68,37 +73,28 @@ public class EventsFragment extends Fragment {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     originalEvents.clear();
                     for(QueryDocumentSnapshot document: queryDocumentSnapshots){
-                        Event event = document.toObject(Event.class);
+//                        Event event = document.toObject(Event.class);
+
+                        Event event = new Event();
+                        // set each field manually
+                        event.setName((String)document.get("Name"));
+                        event.setDescription((String)document.get("Description"));
+                        event.setLikes((Long)document.get("Likes"));
+                        event.setParticipants((ArrayList<DocumentReference>)document.get("Participants"));
+//                        event.setTime((Date)document.get("Time"));
+                        event.setVenue((String)document.get("Venue"));
+                        event.setVenueCoordinates((GeoPoint)document.get("VenueCoordinates"));
+//                        event.setImageUrls((List<String>)document.get("ImageUrls"));
+
                         originalEvents.add(event);
-                        eventIDS.add(document.getId());
+                        eventIDs.add(document.getId());
                     }
-                    eventAdapter.setEventIDS(eventIDS);
+
+                    eventAdapter.setEventIDS(eventIDs);
                     events.clear();
                     events.addAll(originalEvents);
                     eventAdapter.notifyDataSetChanged();
                 });
-
-
-        // Listen for changes to the event collection
-//        TODO rather than this, refresh on pull down. That is better.
-        // TODO And on activity resume, do a refrsh before showing.
-        // TODO that should kep the stuff updated
-        db.collection("events").addSnapshotListener((querySnapshot, e) -> {
-            if (e != null) {
-                Log.w("EventsFragment", "Listen failed.", e);
-                return;
-            }
-            originalEvents.clear();
-            for (QueryDocumentSnapshot document : querySnapshot) {
-                Event event = document.toObject(Event.class);
-                originalEvents.add(event);
-                eventIDS.add(document.getId());
-                eventAdapter.setEventIDS(eventIDS);
-                events.clear();
-                events.addAll(originalEvents);
-                eventAdapter.notifyDataSetChanged();
-            }
-        });
 
         // search bar functionality
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
