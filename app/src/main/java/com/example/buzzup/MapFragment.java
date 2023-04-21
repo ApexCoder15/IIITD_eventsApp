@@ -1,6 +1,7 @@
 package com.example.buzzup;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
@@ -22,6 +23,7 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
 
@@ -54,9 +56,12 @@ public class MapFragment extends Fragment {
 
 
         IMapController mapController = map.getController();
-        mapController.setZoom(10.5);
-        GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
-        mapController.setCenter(startPoint);
+        mapController.setZoom(19.50);
+        map.setMapOrientation(-18.5f);
+        GeoPoint startPoint = new GeoPoint(28.5465, 77.2730);
+//        mapController.setCenter(startPoint);
+        mapController.animateTo(startPoint);
+
 
         auth = FirebaseAuth.getInstance();
         db =  FirebaseFirestore.getInstance();
@@ -71,6 +76,7 @@ public class MapFragment extends Fragment {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                         Event event = document.toObject(Event.class);
+                        addMarkerToMap(event);
                         eventsNearMeList.addView(insertEventNearMeCard(event));
                     }
                 });
@@ -91,6 +97,20 @@ public class MapFragment extends Fragment {
 
         layout.addView(tv);
         return layout;
+    }
+
+    private void addMarkerToMap(final Event event) {
+        com.google.firebase.firestore.GeoPoint eventCoords = event.getVenueCoordinates();
+        double lat = eventCoords.getLatitude();
+        double lon = eventCoords.getLongitude();
+        GeoPoint markerLoc = new GeoPoint(lat, lon);
+        Marker mr = new Marker(map);
+        mr.setPosition(markerLoc);
+        mr.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        map.getOverlays().add(mr);
+        mr.setTitle(event.getName());
+        mr.setSnippet(event.getDescription());
+        mr.setSubDescription(event.getVenue());
     }
 
     @Override
