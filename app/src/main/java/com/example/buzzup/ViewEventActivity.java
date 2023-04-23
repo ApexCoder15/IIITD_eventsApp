@@ -21,6 +21,7 @@ import org.w3c.dom.Text;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 public class ViewEventActivity extends AppCompatActivity
 {
@@ -42,6 +43,7 @@ public class ViewEventActivity extends AppCompatActivity
         TextView eventDescription = (TextView)findViewById(R.id.event_description);
         TextView eventVenue = (TextView)findViewById(R.id.event_venue);
         TextView eventDateTime = (TextView)findViewById(R.id.event_datetime);
+        TextView eventTagsTV = (TextView)findViewById(R.id.event_tags);
 
         db.collection("events").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -55,6 +57,9 @@ public class ViewEventActivity extends AppCompatActivity
                         eventVenue.setText(document.get("Venue").toString());
                         Timestamp ts = (Timestamp) document.get("Time");
                         eventDateTime.setText(ts.toDate().toString());
+                        List<String> eventTags = (List<String>) document.get("Tags");
+                        String tags = String.join(", ", eventTags);
+                        eventTagsTV.setText(tags);
                         break;
                     }
                     else
