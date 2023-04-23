@@ -1,7 +1,11 @@
 package com.example.buzzup;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
@@ -20,18 +24,28 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.squareup.picasso.Picasso;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements MapEventsReceiver {
     MapView map;
 
     FirebaseAuth auth;
@@ -40,6 +54,19 @@ public class MapFragment extends Fragment {
 
     RecyclerView recyclerView; // recycler view for events near me
     List<Event> eventsNearMe = new ArrayList<>();
+
+    Map<Event, Marker> mp = new HashMap<>();
+    MapEventsOverlay mapEventsOverlay;
+
+    @Override public boolean singleTapConfirmedHelper(GeoPoint p) {
+        InfoWindow.closeAllInfoWindowsOn(map);
+        return true;
+    }
+
+    @Override public boolean longPressHelper(GeoPoint p) {
+        //DO NOTHING FOR NOW:
+        return false;
+    }
 
     public MapFragment() {
 
@@ -55,6 +82,23 @@ public class MapFragment extends Fragment {
     @Override
     public void onViewCreated(View viewItem, Bundle savedInstanceState) {
 
+        map = (MapView) getActivity().findViewById(R.id.mapview);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+
+        map.setBuiltInZoomControls(false);
+        map.setMultiTouchControls(true);
+
+        mapEventsOverlay = new MapEventsOverlay(getContext(), this);
+        map.getOverlays().add(0, mapEventsOverlay);
+
+
+        IMapController mapController = map.getController();
+        mapController.setZoom(19.50);
+        map.setMapOrientation(-18.5f);
+        GeoPoint startPoint = new GeoPoint(28.5465, 77.2730);
+//        mapController.setCenter(startPoint);
+        mapController.animateTo(startPoint);
+
         auth = FirebaseAuth.getInstance();
         db =  FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
@@ -65,7 +109,7 @@ public class MapFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        EventsNearMeAdapter eventsNearMeAdapter = new EventsNearMeAdapter(eventsNearMe, getActivity());
+        EventsNearMeAdapter eventsNearMeAdapter = new EventsNearMeAdapter(eventsNearMe, mapController, mp, getActivity());
         recyclerView.setAdapter(eventsNearMeAdapter);
 
         // load events and put in RV
@@ -93,23 +137,6 @@ public class MapFragment extends Fragment {
                         eventsNearMeAdapter.notifyDataSetChanged();
                     }
                 });
-
-
-
-        map = (MapView) getActivity().findViewById(R.id.mapview);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-
-        map.setBuiltInZoomControls(false);
-        map.setMultiTouchControls(true);
-
-
-        IMapController mapController = map.getController();
-        mapController.setZoom(19.50);
-        map.setMapOrientation(-18.5f);
-        GeoPoint startPoint = new GeoPoint(28.5465, 77.2730);
-//        mapController.setCenter(startPoint);
-        mapController.animateTo(startPoint);
-
     }
 
     private void addMarkerToMap(final Event event) {
@@ -124,6 +151,29 @@ public class MapFragment extends Fragment {
         mr.setTitle(event.getName());
         mr.setSnippet(event.getDescription());
         mr.setSubDescription(event.getVenue());
+
+        new AsyncTask<String, Integer, Drawable>() {
+            @Override
+            protected Drawable doInBackground(String... strings) {
+                Bitmap bmp = null;
+                try {
+                    HttpURLConnection connection = (HttpURLConnection) new URL(event.getImageUrls().get(0)).openConnection();
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    bmp = BitmapFactory.decodeStream(input);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return new BitmapDrawable(bmp);
+            }
+
+            protected void onPostExecute(Drawable result) {
+                //Add image to ImageView
+                mr.setImage(result);
+            }
+        }.execute();
+
+        mp.put(event, mr);
     }
 
     @Override
