@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,14 +29,17 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapFragment extends Fragment {
     MapView map;
-    LinearLayout eventsNearMeList;
 
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore db;
+
+    RecyclerView recyclerView; // recycler view for events near me
+    List<Event> eventsNearMe = new ArrayList<>();
 
     public MapFragment() {
 
@@ -49,6 +54,48 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onViewCreated(View viewItem, Bundle savedInstanceState) {
+
+        auth = FirebaseAuth.getInstance();
+        db =  FirebaseFirestore.getInstance();
+        user = auth.getCurrentUser();
+
+//        making the recycler view for EventsNearMe horizontal using a linear layout manager
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView = viewItem.findViewById(R.id.recycler_view_events_near_me);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
+
+        EventsNearMeAdapter eventsNearMeAdapter = new EventsNearMeAdapter(eventsNearMe, getActivity());
+        recyclerView.setAdapter(eventsNearMeAdapter);
+
+        // load events and put in RV
+//        TODO filter events based on time (And interests?)
+        db.collection("events")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    eventsNearMe.clear();
+                    for(QueryDocumentSnapshot document: queryDocumentSnapshots){
+                        //                        Event event = document.toObject(Event.class);
+
+                        Event event = new Event();
+                        // set each field manually
+                        event.setName((String)document.get("Name"));
+                        event.setDescription((String)document.get("Description"));
+                        event.setLikes((Long)document.get("Likes"));
+                        event.setParticipants((ArrayList<DocumentReference>)document.get("Participants"));
+//                        event.setTime((Date)document.get("Time"));
+                        event.setVenue((String)document.get("Venue"));
+                        event.setVenueCoordinates((com.google.firebase.firestore.GeoPoint)document.get("VenueCoordinates"));
+                        event.setImageUrls((List<String>)document.get("ImageUrls"));
+
+                        addMarkerToMap(event);
+                        eventsNearMe.add(event);
+                        eventsNearMeAdapter.notifyDataSetChanged();
+                    }
+                });
+
+
+
         map = (MapView) getActivity().findViewById(R.id.mapview);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
@@ -63,53 +110,6 @@ public class MapFragment extends Fragment {
 //        mapController.setCenter(startPoint);
         mapController.animateTo(startPoint);
 
-
-        auth = FirebaseAuth.getInstance();
-        db =  FirebaseFirestore.getInstance();
-        user = auth.getCurrentUser();
-
-        eventsNearMeList = (LinearLayout) getActivity().findViewById(R.id.events_near_me_list);
-
-        // add al events
-//        TODO filter events based on time (And interests?)
-        db.collection("events")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for(QueryDocumentSnapshot document: queryDocumentSnapshots){
-                        //                        Event event = document.toObject(Event.class);
-
-                        Event event = new Event();
-                        // set each field manually
-                        event.setName((String)document.get("Name"));
-                        event.setDescription((String)document.get("Description"));
-                        event.setLikes((Long)document.get("Likes"));
-                        event.setParticipants((ArrayList<DocumentReference>)document.get("Participants"));
-//                        event.setTime((Date)document.get("Time"));
-                        event.setVenue((String)document.get("Venue"));
-                        event.setVenueCoordinates((com.google.firebase.firestore.GeoPoint)document.get("VenueCoordinates"));
-//                        event.setImageUrls((List<String>)document.get("ImageUrls"));
-
-                        addMarkerToMap(event);
-                        eventsNearMeList.addView(insertEventNearMeCard(event));
-                    }
-                });
-    }
-
-    private View insertEventNearMeCard(final Event event) {
-        LinearLayout layout = new LinearLayout(getContext());
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(500, 300);
-        layoutParams.setMargins( 8 , 8 , 8 , 8) ;
-        layout.setLayoutParams(layoutParams);
-
-        layout.setGravity(Gravity.CENTER);
-        layout.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_rounded));
-
-        TextView tv = new TextView(getActivity());
-        tv.setText(event.getName());
-
-        layout.addView(tv);
-        return layout;
     }
 
     private void addMarkerToMap(final Event event) {

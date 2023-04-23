@@ -6,10 +6,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_weight="5"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_weight="3">
+        android:layout_marginRight="8dp">
 
         <org.osmdroid.views.MapView
             android:id="@+id/mapview"
@@ -17,20 +17,12 @@
             android:layout_height="fill_parent" />
     </LinearLayout>
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
-        android:layout_weight="1">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:id="@+id/events_near_me_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-
-    </HorizontalScrollView>
+        android:layout_weight="1"
+        android:id="@+id/recycler_view_events_near_me">
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </LinearLayout>
