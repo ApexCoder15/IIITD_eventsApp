@@ -41,7 +41,6 @@ public class PostDetailActivity extends AppCompatActivity {
     String myEmail, myName, postId;
     ImageView pImageIv;
     TextView uNameTv, pTimeTv, pTitleTv, pDescriptionTv, pLikesTv;
-    Button likeBtn;
 
     EditText commentEt;
     ImageButton sendBtn;
@@ -76,7 +75,6 @@ public class PostDetailActivity extends AppCompatActivity {
         pTimeTv = findViewById(R.id.pTimeTv);
         pTitleTv = findViewById(R.id.pTitleTv);
         pLikesTv = findViewById(R.id.pLikesTv);
-        likeBtn = findViewById(R.id.likeBtn);
 
         commentEt = findViewById(R.id.commentEt);
         sendBtn = findViewById(R.id.sendBtn);
@@ -217,7 +215,8 @@ public class PostDetailActivity extends AppCompatActivity {
                             pDescriptionTv.setText(post.getDescription());
                             uNameTv.setText(post.getuName());
                             pTimeTv.setText(pTime);
-                            pLikesTv.setText(Long.toString(post.getLikes()));
+                            String likesText = Long.toString(post.getLikes()) + " likes";
+                            pLikesTv.setText(likesText);
 
                             if(imageUrl.equals("noImage")){
                                 // hide image view

@@ -88,7 +88,8 @@ public class PostAdapter extends  RecyclerView.Adapter<PostAdapter.MyHolder> {
         holder.pDescriptionTv.setText(description);
         holder.uNameTv.setText(uName);
         holder.pTimeTv.setText(pTime);
-        holder.pLikesTv.setText(Long.toString(likes));
+        String likesText = Long.toString(likes)+" likes";
+        holder.pLikesTv.setText(likesText);
 
         if(imageUrl.equals("noImage")){
             // hide image view
@@ -118,7 +119,7 @@ public class PostAdapter extends  RecyclerView.Adapter<PostAdapter.MyHolder> {
 
                                 int index = hasUserLikedPost(postList.get(position).getId());
                                 if(index >=0){
-                                    Toast.makeText(context.getApplicationContext(), "Unliking event", Toast.LENGTH_SHORT).show();
+                                    // Toast.makeText(context.getApplicationContext(), "Unliking post", Toast.LENGTH_SHORT).show();
 
                                     long likes1 = max(1,postList.get(position).getLikes());
                                     likes1 -= 1;
@@ -141,7 +142,7 @@ public class PostAdapter extends  RecyclerView.Adapter<PostAdapter.MyHolder> {
                                 }
                                 else{
                                     // event not liked by user before, liking first time.
-                                    Toast.makeText(context.getApplicationContext(), "Liking post", Toast.LENGTH_SHORT).show();
+                                    // Toast.makeText(context.getApplicationContext(), "Liking post", Toast.LENGTH_SHORT).show();
 
                                     long likes1 = max(0,postList.get(position).getLikes());
                                     likes1 += 1;
