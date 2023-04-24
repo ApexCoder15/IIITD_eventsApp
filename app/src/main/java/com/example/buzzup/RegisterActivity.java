@@ -101,6 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
                             data.put("is_approved",false);
                             data.put("likedEvents", new ArrayList<>());
                             data.put("rsvpEvents", new ArrayList<>());
+                            data.put("likedPosts", new ArrayList<>());
                             db.collection("user").document(email).set(data);
                             Toast.makeText(RegisterActivity.this, "Account created.",
                                     Toast.LENGTH_SHORT).show();

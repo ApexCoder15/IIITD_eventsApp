@@ -217,6 +217,7 @@ public class PostDetailActivity extends AppCompatActivity {
                             pDescriptionTv.setText(post.getDescription());
                             uNameTv.setText(post.getuName());
                             pTimeTv.setText(pTime);
+                            pLikesTv.setText(Long.toString(post.getLikes()));
 
                             if(imageUrl.equals("noImage")){
                                 // hide image view

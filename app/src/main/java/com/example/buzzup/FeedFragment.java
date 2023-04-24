@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -24,6 +26,8 @@ public class FeedFragment extends Fragment {
     Button mAddPostBtn;
     RecyclerView mRecyclerView;
     SearchView mPostsSearchView;
+    FirebaseAuth auth;
+    FirebaseUser user;
     FirebaseFirestore db;
 
     List<Post> posts;
@@ -40,7 +44,9 @@ public class FeedFragment extends Fragment {
 
     @Override
     public void onViewCreated(View itemView, Bundle savedInstanceState) {
-        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        db =  FirebaseFirestore.getInstance();
+        user = auth.getCurrentUser();
 
         mAddPostBtn = getActivity().findViewById(R.id.add_post_to_feed_btn);
         mRecyclerView = getActivity().findViewById(R.id.feed_rv);
@@ -55,7 +61,7 @@ public class FeedFragment extends Fragment {
 
         posts = new ArrayList<>();
         originalPosts = new ArrayList<>();
-        postAdapter = new PostAdapter(getActivity(), posts);
+        postAdapter = new PostAdapter(getActivity(), posts, auth, user, db);
         mRecyclerView.setAdapter(postAdapter);
         loadPosts();
 
@@ -103,7 +109,7 @@ public class FeedFragment extends Fragment {
                         posts.add(post);
                         postIDS.add(document.getId());
                     }
-                    postAdapter = new PostAdapter(getActivity(), posts);
+                    postAdapter = new PostAdapter(getActivity(), posts, auth, user, db);
                     mRecyclerView.setAdapter(postAdapter);
                 });
 
@@ -122,7 +128,7 @@ public class FeedFragment extends Fragment {
                             posts.add(post);
                         }
                     }
-                    postAdapter = new PostAdapter(getActivity(), posts);
+                    postAdapter = new PostAdapter(getActivity(), posts, auth, user, db);
                     mRecyclerView.setAdapter(postAdapter);
                 });
     }
