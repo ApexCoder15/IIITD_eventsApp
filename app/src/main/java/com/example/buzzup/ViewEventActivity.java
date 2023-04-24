@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,6 +17,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -28,6 +30,10 @@ public class ViewEventActivity extends AppCompatActivity
     FirebaseFirestore db;
     final String TAG = "ViewEventActivity";
 
+    TextView eventNameTV;
+    TextView eventTagsTV;
+    ImageView eventImagesIV;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -39,11 +45,9 @@ public class ViewEventActivity extends AppCompatActivity
         Intent intent = getIntent();
         int index = Integer.parseInt(intent.getStringExtra("index"));
 
-        TextView eventName = (TextView)findViewById(R.id.event_name);
-        TextView eventDescription = (TextView)findViewById(R.id.event_description);
-        TextView eventVenue = (TextView)findViewById(R.id.event_venue);
-        TextView eventDateTime = (TextView)findViewById(R.id.event_datetime);
-        TextView eventTagsTV = (TextView)findViewById(R.id.event_tags);
+        eventNameTV = (TextView)findViewById(R.id.event_name);
+        eventTagsTV = (TextView)findViewById(R.id.event_tags);
+        eventImagesIV = (ImageView)findViewById(R.id.iv_event_images);
 
         db.collection("events").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -52,14 +56,13 @@ public class ViewEventActivity extends AppCompatActivity
                     if (count==index)
                     {
                         // get the event details and update UI
-                        eventName.setText(document.get("Name").toString());
-                        eventDescription.setText(document.get("Description").toString());
-                        eventVenue.setText(document.get("Venue").toString());
-                        Timestamp ts = (Timestamp) document.get("Time");
-                        eventDateTime.setText(ts.toDate().toString());
+                        eventNameTV.setText(document.get("Name").toString());
                         List<String> eventTags = (List<String>) document.get("Tags");
                         String tags = String.join(", ", eventTags);
                         eventTagsTV.setText(tags);
+                        List<String> imageUrls = (List<String>) document.get("ImageUrls");
+                        String imageUrl = imageUrls.get(0);
+                        Picasso.get().load(imageUrl).into(eventImagesIV);
                         break;
                     }
                     else

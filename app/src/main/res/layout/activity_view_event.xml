@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
     android:orientation="vertical">
 
 <ScrollView
@@ -15,105 +14,78 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Event Title"
-            android:textColor="@color/black"
-            android:textSize="32sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/event_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="20sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
+            <TextView
+                android:id="@+id/event_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TODO"
+                android:textColor="@color/black"
+                android:textSize="32sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Event Description"
-            android:textColor="@color/black"
-            android:textSize="32sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
+            <TextView
+                android:id="@+id/event_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TODO"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" />
 
-        <TextView
-            android:id="@+id/event_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="20sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
+            <ImageView
+                android:scaleType="centerCrop"
+                android:id="@+id/iv_event_images"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="8dp"
+                />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Event Location"
-            android:textColor="@color/black"
-            android:textSize="32sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/event_venue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="20sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Event Date and Time"
-            android:textColor="@color/black"
-            android:textSize="32sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
 
-        <TextView
-            android:id="@+id/event_datetime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="20sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tags"
-            android:textColor="@color/black"
-            android:textSize="32sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
 
-        <TextView
-            android:id="@+id/event_tags"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="20sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" />
+<!--        <TextView-->
+<!--            android:id="@+id/event_description"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text=""-->
+<!--            android:textSize="20sp"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:layout_marginLeft="8dp"-->
+<!--            android:layout_marginRight="8dp"/>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/event_venue"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text=""-->
+<!--            android:textSize="20sp"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:layout_marginLeft="8dp"-->
+<!--            android:layout_marginRight="8dp" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/event_datetime"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text=""-->
+<!--            android:textSize="20sp"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:layout_marginLeft="8dp"-->
+<!--            android:layout_marginRight="8dp" />-->
+
+
 
     </LinearLayout>
 </ScrollView>
