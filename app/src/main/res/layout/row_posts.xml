@@ -120,17 +120,6 @@
                 android:backgroundTint="@color/white"
                 android:drawablePadding="5dp"
                 android:text="COMMENT"/>
-            <Button
-                android:id="@+id/shareBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_share_black"
-                android:layout_weight="1"
-                android:layout_margin="3dp"
-                android:textColor="@color/black"
-                android:backgroundTint="@color/white"
-                android:drawablePadding="5dp"
-                android:text="SHARE"/>
         </LinearLayout>
     </LinearLayout>
 

@@ -29,6 +29,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
+        android:paddingBottom="70dp"
         android:id="@+id/feed_rv"
         android:layout_margin="8dp"
         android:layout_width="match_parent"

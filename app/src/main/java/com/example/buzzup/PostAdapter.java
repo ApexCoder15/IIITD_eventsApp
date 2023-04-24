@@ -89,13 +89,6 @@ public class PostAdapter extends  RecyclerView.Adapter<PostAdapter.MyHolder> {
                 context.startActivity(intent);
             }
         });
-
-        holder.shareBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override
@@ -106,7 +99,7 @@ public class PostAdapter extends  RecyclerView.Adapter<PostAdapter.MyHolder> {
     class MyHolder extends RecyclerView.ViewHolder{
         ImageView pImageIv;
         TextView uNameTv, pTimeTv, pTitleTv, pDescriptionTv, pLikesTv;
-        Button likeBtn, shareBtn, commentBtn;
+        Button likeBtn, commentBtn;
         public MyHolder(@NonNull View itemView) {
             super(itemView);
             pImageIv = itemView.findViewById(R.id.pImageIv);
@@ -116,7 +109,6 @@ public class PostAdapter extends  RecyclerView.Adapter<PostAdapter.MyHolder> {
             pTitleTv = itemView.findViewById(R.id.pTitleTv);
             pLikesTv = itemView.findViewById(R.id.pLikesTv);
             likeBtn = itemView.findViewById(R.id.likeBtn);
-            shareBtn = itemView.findViewById(R.id.shareBtn);
             commentBtn = itemView.findViewById(R.id.commentBtn);
         }
     }

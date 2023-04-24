@@ -41,7 +41,7 @@ public class PostDetailActivity extends AppCompatActivity {
     String myEmail, myName, postId;
     ImageView pImageIv;
     TextView uNameTv, pTimeTv, pTitleTv, pDescriptionTv, pLikesTv;
-    Button likeBtn, shareBtn;
+    Button likeBtn;
 
     EditText commentEt;
     ImageButton sendBtn;
@@ -77,7 +77,6 @@ public class PostDetailActivity extends AppCompatActivity {
         pTitleTv = findViewById(R.id.pTitleTv);
         pLikesTv = findViewById(R.id.pLikesTv);
         likeBtn = findViewById(R.id.likeBtn);
-        shareBtn = findViewById(R.id.shareBtn);
 
         commentEt = findViewById(R.id.commentEt);
         sendBtn = findViewById(R.id.sendBtn);
@@ -192,7 +191,7 @@ public class PostDetailActivity extends AppCompatActivity {
                             db.collection("posts").document(postId).update("comments", comments)
                                     .addOnSuccessListener(unused -> {
                                         pd.dismiss();
-                                        Toast.makeText(this,"Comment added!",Toast.LENGTH_SHORT).show();
+                                        // Toast.makeText(this,"Comment added!",Toast.LENGTH_SHORT).show();
                                         commentEt.setText("");
                                     });
 
