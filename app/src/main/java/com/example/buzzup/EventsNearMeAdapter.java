@@ -2,6 +2,7 @@ package com.example.buzzup;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ public class EventsNearMeAdapter extends RecyclerView.Adapter<EventsNearMeAdapte
         // on each holder, add an event listener
         holder.imageView.setOnClickListener(view->{
             // navigate to the map location
-            Toast.makeText(view.getContext(), "Short Press", Toast.LENGTH_SHORT);
+//            Toast.makeText(view.getContext(), "Short Press", Toast.LENGTH_SHORT).show();
             GeoPoint point = event.getVenueCoordinates();
             org.osmdroid.util.GeoPoint mapLoc = new org.osmdroid.util.GeoPoint(point.getLatitude(), point.getLongitude());
             mapController.animateTo(mapLoc, 20.0, 1000L);
@@ -56,12 +57,16 @@ public class EventsNearMeAdapter extends RecyclerView.Adapter<EventsNearMeAdapte
             mr.showInfoWindow();
         });
 
-//        TODO long press listener not working
-//        holder.imageView.setOnLongClickListener(view->{
-//            // open the Event Activity
-//            Toast.makeText(view.getContext(), "Long Press", Toast.LENGTH_SHORT);
-//            return true;
-//        });
+        holder.imageView.setOnLongClickListener(view->{
+            // open the Event Activity
+//            Toast.makeText(view.getContext(), "Long Press", Toast.LENGTH_SHORT).show();
+            // if this works, open EventDetails Activity from here.
+            Intent intent = new Intent(activity, ViewEventActivity.class);
+            intent.putExtra("index", Integer.toString(position));
+            activity.startActivity(intent);
+
+            return true;
+        });
     }
 
     @Override
