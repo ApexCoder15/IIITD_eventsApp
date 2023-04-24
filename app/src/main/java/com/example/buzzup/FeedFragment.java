@@ -1,73 +1,72 @@
 package com.example.buzzup;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedActivity extends AppCompatActivity {
+public class FeedFragment extends Fragment {
 
-    Button addPostButton;
-    RecyclerView recyclerView;
-    SearchView postsSearchView;
+    Button mAddPostBtn;
+    RecyclerView mRecyclerView;
+    SearchView mPostsSearchView;
     FirebaseFirestore db;
+
     List<Post> posts;
     List<Post> originalPosts;
     PostAdapter postAdapter;
 
-    final String TAG = "FeedActivity";
+    public FeedFragment() {
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_feed, container, false);
+    }
 
-        db =  FirebaseFirestore.getInstance();
+    @Override
+    public void onViewCreated(View itemView, Bundle savedInstanceState) {
+        db = FirebaseFirestore.getInstance();
 
-        addPostButton = findViewById(R.id.add_post_action);
-        recyclerView = findViewById(R.id.postsRecyclerView);
-        postsSearchView = findViewById(R.id.postsSearchBar);
+        mAddPostBtn = getActivity().findViewById(R.id.add_post_to_feed_btn);
+        mRecyclerView = getActivity().findViewById(R.id.feed_rv);
+        mPostsSearchView = getActivity().findViewById(R.id.feed_search_bar);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         // shows newest post first, for this load from last
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(true);
 
-        recyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         posts = new ArrayList<>();
         originalPosts = new ArrayList<>();
-        postAdapter = new PostAdapter(this, posts);
-        recyclerView.setAdapter(postAdapter);
+        postAdapter = new PostAdapter(getActivity(), posts);
+        mRecyclerView.setAdapter(postAdapter);
         loadPosts();
-        addPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),AddPostActivity.class);
-                startActivity(intent);
-            }
+
+        mAddPostBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), AddPostActivity.class);
+            startActivity(intent);
         });
 
-        // Listen for changes to the post collection
         db.collection("posts").addSnapshotListener((querySnapshot, e) -> {
             if (e != null) {
-                Log.w(TAG, "Listen failed.", e);
+                Log.w("FeedFragment", "Listen failed.", e);
                 return;
             }
             posts.clear();
@@ -78,7 +77,7 @@ public class FeedActivity extends AppCompatActivity {
             }
         });
 
-        postsSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mPostsSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -86,7 +85,7 @@ public class FeedActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                    searchPosts(newText);
+                searchPosts(newText);
                 return true;
             }
         });
@@ -99,13 +98,13 @@ public class FeedActivity extends AppCompatActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     posts.clear();
                     ArrayList<String> postIDS = new ArrayList<>();
-                    for(QueryDocumentSnapshot document: queryDocumentSnapshots){
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Post post = document.toObject(Post.class);
                         posts.add(post);
                         postIDS.add(document.getId());
                     }
-                    postAdapter = new PostAdapter(this, posts);
-                    recyclerView.setAdapter(postAdapter);
+                    postAdapter = new PostAdapter(getActivity(), posts);
+                    mRecyclerView.setAdapter(postAdapter);
                 });
 
     }
@@ -116,15 +115,15 @@ public class FeedActivity extends AppCompatActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     posts.clear();
                     ArrayList<String> postIDS = new ArrayList<>();
-                    for(QueryDocumentSnapshot document: queryDocumentSnapshots){
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Post post = document.toObject(Post.class);
-                        if(post.getTitle().toLowerCase().contains(searchQuery.toLowerCase()) ||
-                                post.getDescription().toLowerCase().contains(searchQuery.toLowerCase())){
+                        if (post.getTitle().toLowerCase().contains(searchQuery.toLowerCase()) ||
+                                post.getDescription().toLowerCase().contains(searchQuery.toLowerCase())) {
                             posts.add(post);
                         }
                     }
-                    postAdapter = new PostAdapter(this,posts);
-                    recyclerView.setAdapter(postAdapter);
+                    postAdapter = new PostAdapter(getActivity(), posts);
+                    mRecyclerView.setAdapter(postAdapter);
                 });
     }
 }

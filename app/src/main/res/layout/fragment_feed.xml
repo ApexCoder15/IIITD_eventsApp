@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".FeedActivity">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/postsSearchBar"
+        android:id="@+id/feed_search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -15,27 +16,22 @@
         app:queryHint = "Search posts..."/>
 
     <Button
-        android:id="@+id/add_post_action"
+        android:id="@+id/add_post_to_feed_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_create_purple"
-        android:layout_weight="1"
-        android:layout_margin="5dp"
+        android:layout_margin="8dp"
+        android:layout_gravity="center_horizontal"
         android:textColor="@color/black"
         android:backgroundTint="@color/white"
         android:drawablePadding="5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postsSearchBar"
-        app:layout_constraintBottom_toTopOf="@id/postsRecyclerView"
         android:text="CREATE A POST"/>
 
 
     <androidx.recyclerview.widget.RecyclerView
-        app:layout_constraintTop_toBottomOf="@+id/add_post_action"
-        android:id="@+id/postsRecyclerView"
+        android:id="@+id/feed_rv"
+        android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="650dp" />
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -91,7 +91,7 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
 
         eventName.setText(filteredEvents.get(position).getName());
         eventDescription.setText(filteredEvents.get(position).getDescription());
-        eventTime.setText(filteredEvents.get(position).getTimeSimple());
+//        eventTime.setText(filteredEvents.get(position).getTimeSimple());
         eventVenue.setText(filteredEvents.get(position).getVenue());
 
         long likes = max(0,filteredEvents.get(position).getLikes());

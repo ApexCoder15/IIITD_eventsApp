@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"  />
 
     <application
         android:allowBackup="true"
@@ -15,13 +16,16 @@
         android:theme="@style/Theme.BuzzUp"
         tools:targetApi="31">
         <activity
+            android:name=".BaseActivity"
+            android:exported="false" />
+        <activity
             android:name=".PostDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".AddPostActivity"
+            android:name=".calendar"
             android:exported="false" />
         <activity
-            android:name=".FeedActivity"
+            android:name=".AddPostActivity"
             android:exported="false" />
         <activity
             android:name=".AdminCreateNewEventActivity"
@@ -31,9 +35,6 @@
             android:exported="false" />
         <activity
             android:name=".ViewEventActivity"
-            android:exported="false" />
-        <activity
-            android:name=".EventsList"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"

@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Non-Admin User signed in", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(),EventsList.class);
+                                    Intent intent = new Intent(getApplicationContext(),BaseActivity.class);
                                     startActivity(intent);
                                 }
                                 finish();
@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                                                             } else {
                                                                 // regular user
                                                                 Toast.makeText(LoginActivity.this, "Regular User signed in", Toast.LENGTH_SHORT).show();
-                                                                Intent intent = new Intent(getApplicationContext(),EventsList.class);
+                                                                Intent intent = new Intent(getApplicationContext(),BaseActivity.class);
                                                                 startActivity(intent);
                                                             }
                                                             finish();
