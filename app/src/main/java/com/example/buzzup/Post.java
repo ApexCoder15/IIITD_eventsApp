@@ -2,11 +2,12 @@ package com.example.buzzup;
 
 public class Post {
     String id, title, description, imageUrl, time, email, uName;
+    long likes;
 
     public Post() {
     }
 
-    public Post(String id, String title, String description,String imageUrl, String time, String email, String uName) {
+    public Post(String id, String title, String description,String imageUrl, String time, String email, String uName, long likes) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -14,6 +15,7 @@ public class Post {
         this.time = time;
         this.email = email;
         this.uName = uName;
+        this.likes = likes;
     }
 
     public String getId() {
@@ -72,4 +74,11 @@ public class Post {
         this.uName = uName;
     }
 
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
 }

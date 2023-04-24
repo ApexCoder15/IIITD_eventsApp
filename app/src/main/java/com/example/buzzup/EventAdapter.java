@@ -136,7 +136,7 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
                                     int index = hasUserLikedEvent(eventIDS.get(position));
                                     Toast.makeText(finalConvertView.getContext(), "Unliking event", Toast.LENGTH_SHORT).show();
 
-                                    long likes1 = max(0,filteredEvents.get(position).getLikes());
+                                    long likes1 = max(1,filteredEvents.get(position).getLikes());
                                     likes1 -= 1;
                                     eventLikes.setText(Long.toString(likes1));
                                     filteredEvents.get(position).setLikes(likes1);
