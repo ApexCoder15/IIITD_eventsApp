@@ -26,29 +26,37 @@
             android:ellipsize="end"
             android:text="Description:" />
 
-        <TextView
-            android:id="@+id/eventTime"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/dateAndVenue"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/eventDescription"
-            android:layout_marginTop="5dp"
-            android:layout_marginHorizontal="10dp"
-            android:text="Time: " />
+            android:layout_below="@+id/eventDescription">
+            <TextView
+                android:id="@+id/eventTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginHorizontal="10dp"
+                android:text="Time: " />
 
-        <TextView
-            android:id="@+id/eventVenue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/eventDescription"
-            android:layout_toRightOf="@+id/eventTime"
-            android:layout_margin="5dp"
-            android:text="Venue: " />
+            <TextView
+                android:id="@+id/eventVenue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="Venue: " />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/eventLikes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/eventTime"
+            android:layout_below="@id/dateAndVenue"
             android:layout_marginLeft="10dp"
             android:layout_marginVertical="15dp"
             android:layout_marginTop="20dp"
@@ -60,7 +68,7 @@
             android:id="@+id/eventLikeButton"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_below="@id/eventTime"
+            android:layout_below="@id/dateAndVenue"
             android:layout_marginHorizontal="5dp"
             android:layout_marginVertical="13dp"
             android:layout_toRightOf="@id/eventLikes"
@@ -72,7 +80,7 @@
             android:id="@+id/eventRSVPButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/eventTime"
+            android:layout_below="@id/dateAndVenue"
             android:layout_toLeftOf="@+id/eventViewButton"
             android:layout_marginHorizontal="0dp"
             android:layout_marginVertical="0dp"
@@ -84,7 +92,7 @@
             android:id="@+id/eventViewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/eventTime"
+            android:layout_below="@id/dateAndVenue"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="20dp"

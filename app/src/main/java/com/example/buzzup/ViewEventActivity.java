@@ -79,11 +79,8 @@ public class ViewEventActivity extends AppCompatActivity
                         eventDescTV.setText(eventDesc);
                         String eventVenue = (String) document.get("Venue");
                         eventVenueTV.setText(new StringBuilder().append("Venue : ").append(eventVenue).toString());
-                        // TODO Krishna
-//                        Timestamp eventDateTime = ((Timestamp) document.get("Time"));
-//                        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//                        sfd.format(eventDateTime);
-//                        eventDateTimeTV.setText(new StringBuilder().append("Date & Time : ").append(sfd).toString());
+                        Date eventDateTime = (((Timestamp) document.get("Time")).toDate());
+                        eventDateTimeTV.setText(new StringBuilder().append("Date & Time : ").append(getTimeSimple(eventDateTime)).toString());
                         eventViewOnMapBtn.setOnClickListener(view-> {
                             Toast.makeText(this, "TODO Open Map Fragment...", Toast.LENGTH_SHORT).show();
                         });
@@ -99,5 +96,11 @@ public class ViewEventActivity extends AppCompatActivity
                 Log.e(TAG, "Error getting documents: ", task.getException());
             }
         });
+    }
+
+    public String getTimeSimple(Date time){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss");
+        String date = simpleDateFormat.format(time);
+        return date.substring(0, date.length()-3);
     }
 }

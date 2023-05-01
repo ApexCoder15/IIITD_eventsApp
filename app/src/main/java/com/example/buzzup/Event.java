@@ -1,5 +1,6 @@
 package com.example.buzzup;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -20,11 +21,11 @@ public class Event {
     public Event() {
     }
 
-    public Event(String name, String description, long likes, Date time, String venue, GeoPoint venueCoordinates, List<DocumentReference> participants, List<String> imageUrls, List<String> tags) {
+    public Event(String name, String description, long likes, Timestamp time, String venue, GeoPoint venueCoordinates, List<DocumentReference> participants, List<String> imageUrls, List<String> tags) {
         this.name = name;
         this.description = description;
         this.likes = likes;
-        this.time = time;
+        this.time = time.toDate();
         this.venue = venue;
         this.venueCoordinates = venueCoordinates;
         this.participants = participants;

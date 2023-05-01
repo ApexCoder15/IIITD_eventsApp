@@ -11,6 +11,7 @@ import android.widget.ListView;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -81,7 +82,7 @@ public class EventsFragment extends Fragment {
                         event.setDescription((String)document.get("Description"));
                         event.setLikes((Long)document.get("Likes"));
                         event.setParticipants((ArrayList<DocumentReference>)document.get("Participants"));
-//                        event.setTime((Date)document.get("Time"));
+                        event.setTime(((Timestamp)document.get("Time")).toDate());
                         event.setVenue((String)document.get("Venue"));
                         event.setVenueCoordinates((GeoPoint)document.get("VenueCoordinates"));
 //                        event.setImageUrls((List<String>)document.get("ImageUrls"));
