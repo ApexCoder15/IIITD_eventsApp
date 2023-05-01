@@ -16,11 +16,13 @@ public class HomeRvAdapterInner extends RecyclerView.Adapter<HomeRvViewHolderInn
 {
     Context context;
     List<HomeRvModelInner> list;
+    ClickListener listener;
 
-    public HomeRvAdapterInner(Context context1, List<HomeRvModelInner> list1)
+    public HomeRvAdapterInner(Context context1, List<HomeRvModelInner> list1, ClickListener listener1)
     {
         this.context = context1;
         this.list = list1;
+        this.listener = listener1;
     }
 
     @Override
@@ -35,6 +37,12 @@ public class HomeRvAdapterInner extends RecyclerView.Adapter<HomeRvViewHolderInn
         final int index = holder.getAdapterPosition();
         holder.eventName.setText(list.get(position).getEventName());
         Picasso.get().load(list.get(position).eventImageUrl).into(holder.eventImage);
+        holder.eventImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.click(index, list.get(position).getEventName());
+            }
+        });
     }
 
     @Override

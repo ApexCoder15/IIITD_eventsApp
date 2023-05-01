@@ -1,5 +1,6 @@
 package com.example.buzzup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ public class HomeFragment extends Fragment
     ArrayList<HomeRvModel> eventData;
     LinearLayoutManager linearLayoutManager;
     HomeRvAdapter homeRvAdapter;
+    ClickListener listener;
     public HomeFragment()
     {
     }
@@ -100,7 +102,20 @@ public class HomeFragment extends Fragment
                         eventInner.add(new HomeRvModelInner(e.getImageUrls().get(0), e.getName()));
                     }
                     eventData.add(new HomeRvModel(eventInner, "Music"));*/
-                    homeRvAdapter = new HomeRvAdapter(getActivity(), eventData);
+                    listener = new ClickListener() {
+                        @Override
+                        public void click(int index, String eventName)
+                        {
+                            Log.d("CLICK EVENT", "CLICKED AT INDEX "+index+eventName);
+                            //transition to new activity with details of myModelList[index]
+                            Intent i = new Intent(getActivity(),ViewEventActivity.class);
+                            i.putExtra("index", "-1");
+                            i.putExtra("name", eventName);
+                            getActivity().startActivity(i);
+
+                        }
+                    };
+                    homeRvAdapter = new HomeRvAdapter(getActivity(), eventData, listener);
                     recyclerView.setAdapter(homeRvAdapter);
                 });
         /*Log.d("HOME", dict.size()+"");

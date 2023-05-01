@@ -41,6 +41,7 @@ public class ViewEventActivity extends AppCompatActivity
     TextView eventDateTimeTV;
     TextView eventVenueTV;
     Button eventViewOnMapBtn;
+    String name="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,7 +52,14 @@ public class ViewEventActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
 
         Intent intent = getIntent();
+        System.out.println(intent.getStringExtra("index"));
+        System.out.println(intent.getStringExtra("name"));
         int index = Integer.parseInt(intent.getStringExtra("index"));
+        if (index==-1)
+        {
+            name = intent.getStringExtra("name");
+            System.out.println("NAME "+name);
+        }
 
         eventNameTV = (TextView)findViewById(R.id.event_name);
         eventTagsTV = (TextView)findViewById(R.id.event_tags);
@@ -61,41 +69,75 @@ public class ViewEventActivity extends AppCompatActivity
         eventVenueTV = (TextView) findViewById(R.id.tv_event_venue);
         eventViewOnMapBtn = (Button) findViewById(R.id.btn_view_event_on_map);
 
-        db.collection("events").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                int count = 0;
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    if (count==index)
-                    {
-                        // get the event details and update UI
-                        eventNameTV.setText(document.get("Name").toString());
-                        List<String> eventTags = (List<String>) document.get("Tags");
-                        String tags = String.join(", ", eventTags);
-                        eventTagsTV.setText(tags);
-                        List<String> imageUrls = (List<String>) document.get("ImageUrls");
-                        String imageUrl = imageUrls.get(new Random().nextInt(imageUrls.size()));
-                        Picasso.get().load(imageUrl).into(eventImagesIV);
-                        String eventDesc = (String) document.get("Description");
-                        eventDescTV.setText(eventDesc);
-                        String eventVenue = (String) document.get("Venue");
-                        eventVenueTV.setText(new StringBuilder().append("Venue : ").append(eventVenue).toString());
-                        Date eventDateTime = (((Timestamp) document.get("Time")).toDate());
-                        eventDateTimeTV.setText(new StringBuilder().append("Date & Time : ").append(getTimeSimple(eventDateTime)).toString());
-                        eventViewOnMapBtn.setOnClickListener(view-> {
-                            Toast.makeText(this, "TODO Open Map Fragment...", Toast.LENGTH_SHORT).show();
-                        });
-                        break;
-                    }
-                    else
-                    {
-                        count += 1;
-                    }
+        if (index==-1)
+        {
+            db.collection("events").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        //System.out.println("THIS - "+document.get("Name").toString()+" : "+name);
+                        if (document.get("Name").toString().equals(name))
+                        {
+                            //System.out.println("HERE - ");
+                            // get the event details and update UI
+                            eventNameTV.setText(document.get("Name").toString());
+                            List<String> eventTags = (List<String>) document.get("Tags");
+                            String tags = String.join(", ", eventTags);
+                            eventTagsTV.setText(tags);
+                            List<String> imageUrls = (List<String>) document.get("ImageUrls");
+                            String imageUrl = imageUrls.get(new Random().nextInt(imageUrls.size()));
+                            Picasso.get().load(imageUrl).into(eventImagesIV);
+                            String eventDesc = (String) document.get("Description");
+                            eventDescTV.setText(eventDesc);
+                            String eventVenue = (String) document.get("Venue");
+                            eventVenueTV.setText(new StringBuilder().append("Venue : ").append(eventVenue).toString());
+                            Date eventDateTime = (((Timestamp) document.get("Time")).toDate());
+                            eventDateTimeTV.setText(new StringBuilder().append("Date & Time : ").append(getTimeSimple(eventDateTime)).toString());
+                            eventViewOnMapBtn.setOnClickListener(view-> {
+                                Toast.makeText(this, "TODO Open Map Fragment...", Toast.LENGTH_SHORT).show();
+                            });
+                            break;
+                        }
 
+                    }
+                } else {
+                    Log.e(TAG, "Error getting documents: ", task.getException());
                 }
-            } else {
-                Log.e(TAG, "Error getting documents: ", task.getException());
-            }
-        });
+            });
+        }
+        else {
+            db.collection("events").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    int count = 0;
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (count == index) {
+                            // get the event details and update UI
+                            eventNameTV.setText(document.get("Name").toString());
+                            List<String> eventTags = (List<String>) document.get("Tags");
+                            String tags = String.join(", ", eventTags);
+                            eventTagsTV.setText(tags);
+                            List<String> imageUrls = (List<String>) document.get("ImageUrls");
+                            String imageUrl = imageUrls.get(new Random().nextInt(imageUrls.size()));
+                            Picasso.get().load(imageUrl).into(eventImagesIV);
+                            String eventDesc = (String) document.get("Description");
+                            eventDescTV.setText(eventDesc);
+                            String eventVenue = (String) document.get("Venue");
+                            eventVenueTV.setText(new StringBuilder().append("Venue : ").append(eventVenue).toString());
+                            Date eventDateTime = (((Timestamp) document.get("Time")).toDate());
+                            eventDateTimeTV.setText(new StringBuilder().append("Date & Time : ").append(getTimeSimple(eventDateTime)).toString());
+                            eventViewOnMapBtn.setOnClickListener(view -> {
+                                Toast.makeText(this, "TODO Open Map Fragment...", Toast.LENGTH_SHORT).show();
+                            });
+                            break;
+                        } else {
+                            count += 1;
+                        }
+
+                    }
+                } else {
+                    Log.e(TAG, "Error getting documents: ", task.getException());
+                }
+            });
+        }
     }
 
     public String getTimeSimple(Date time){

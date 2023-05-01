@@ -18,11 +18,13 @@ public class HomeRvAdapter extends RecyclerView.Adapter<HomeRvViewHolder>
     Context context;
     List<HomeRvModel> list;
     RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    ClickListener listener;
 
-    public HomeRvAdapter(Context context1, List<HomeRvModel> list1)
+    public HomeRvAdapter(Context context1, List<HomeRvModel> list1, ClickListener listener1)
     {
         this.context = context1;
         this.list = list1;
+        this.listener = listener1;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class HomeRvAdapter extends RecyclerView.Adapter<HomeRvViewHolder>
         HomeRvViewHolder.tagName.setText(parentItem.getTagName());
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         layoutManager.setInitialPrefetchItemCount(parentItem.getTagEventLists().size());
-        HomeRvAdapterInner childItemAdapter = new HomeRvAdapterInner(context, parentItem.getTagEventLists());
+        HomeRvAdapterInner childItemAdapter = new HomeRvAdapterInner(context, parentItem.getTagEventLists(), listener);
         HomeRvViewHolder.ChildRecyclerView.setLayoutManager(layoutManager);
         HomeRvViewHolder.ChildRecyclerView.setAdapter(childItemAdapter);
         HomeRvViewHolder.ChildRecyclerView.setRecycledViewPool(viewPool);
