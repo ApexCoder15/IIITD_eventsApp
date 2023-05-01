@@ -2,11 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp">
+    android:layout_margin="16dp"
+    android:orientation="vertical">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,10 +20,11 @@
                 android:layout_height="wrap_content"
                 android:text="Event Title"
                 android:textColor="@color/black"
-                android:textSize="32sp"
+                android:textSize="20sp"
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginRight="8dp"
+                android:paddingLeft="3dp"/>
 
             <EditText
                 android:id="@+id/et_admin_create_event_title"
@@ -29,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter a catchy title for event ..."
                 android:textSize="20sp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"/>
 
@@ -38,10 +41,11 @@
                 android:layout_height="wrap_content"
                 android:text="Event Description"
                 android:textColor="@color/black"
-                android:textSize="32sp"
+                android:textSize="20sp"
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginRight="8dp"
+                android:paddingLeft="3dp"/>
 <!--refer : https://stackoverflow.com/questions/4233626/allow-multi-line-in-edittext-view-in-android?answertab=trending#tab-top-->
 
             <EditText
@@ -54,19 +58,19 @@
                 android:minLines="3"
                 android:gravity="top|start"
                 android:scrollbars="vertical"
-                android:layout_marginTop="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enter Location"
+                android:text="Location"
                 android:textColor="@color/black"
-                android:textSize="32sp"
+                android:textSize="20sp"
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginRight="8dp"
+                android:paddingLeft="3dp" />
 
             <EditText
                 android:id="@+id/et_admin_create_event_loc"
@@ -74,109 +78,72 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter college location where event takes place ..."
                 android:textSize="20sp"
-                android:layout_marginTop="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"/>
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Enter Date"
-                android:textColor="@color/black"
-                android:textSize="32sp"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:paddingLeft="3dp" />
+                <TextView
+                    android:id="@+id/te_admin_selectDateText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Date"
+                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:paddingLeft="3dp" />
+            </LinearLayout>
 
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:id="@+id/et_admin_create_event_date"-->
-<!--                android:clickable="false"-->
-<!--                android:cursorVisible="false"-->
-<!--                android:focusable="false"-->
-<!--                android:focusableInTouchMode="false"-->
-<!--                android:hint="Click here to select event date"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:layout_marginLeft="8dp"-->
-<!--                android:layout_marginRight="8dp"/>-->
-
-            <DatePicker
-                android:id="@+id/dp_admin_create_event_date"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                />
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:paddingLeft="3dp" />
+                <TextView
+                    android:id="@+id/te_admin_selectTimeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Time"
+                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:paddingLeft="3dp" />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Enter Time"
-                android:textColor="@color/black"
-                android:textSize="32sp"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
 
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:id="@+id/et_admin_create_event_time"-->
-<!--                android:clickable="false"-->
-<!--                android:cursorVisible="false"-->
-<!--                android:focusable="false"-->
-<!--                android:focusableInTouchMode="false"-->
-<!--                android:hint="Click here to select event time"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:layout_marginLeft="8dp"-->
-<!--                android:layout_marginRight="8dp"/>-->
 
-            <TimePicker
-                android:id="@+id/tp_admin_create_event_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                />
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Upload Event Poster"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="32sp"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:layout_marginLeft="8dp"-->
-<!--                android:layout_marginRight="8dp"/>-->
-
-<!--            <Button-->
-<!--                android:id="@+id/btn_admin_create_event_poster_upload_btn"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Click here to upload image of poster ..."-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:layout_marginLeft="8dp"-->
-<!--                android:layout_marginRight="8dp"-->
-<!--                />-->
-
-            <Button
-                android:id="@+id/btn_admin_create_event_submit_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Submit Event"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:backgroundTint="#0000FF"
-                />
 
         </LinearLayout>
-</ScrollView>
 
-
-
-
+    </ScrollView>
+    <Button
+        android:id="@+id/btn_admin_create_event_submit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit Event"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:backgroundTint="#0000FF"
+        />
 </LinearLayout>

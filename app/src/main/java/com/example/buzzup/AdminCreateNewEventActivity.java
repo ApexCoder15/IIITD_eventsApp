@@ -1,9 +1,12 @@
 package com.example.buzzup;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -15,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,18 +27,19 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AdminCreateNewEventActivity extends AppCompatActivity {
-    private Button mSubmitBtn;
-    private EditText mEventTitle;
-    private EditText mEventDesc;
 
     FirebaseFirestore db;
     FirebaseAuth auth;
     FirebaseUser user;
-
-
-    private DatePicker mEventDate;
+    private Button mSubmitBtn;
+    private EditText mEventTitle;
+    private EditText mEventDesc;
+//    private DatePicker mEventDate;
     private TimePicker mEventTime;
     private EditText mEventLoc;
+    private TextView selectDateText;
+    private TextView selectTimeText;
+    final Calendar myCalendar= Calendar.getInstance();
 //    private Button mEventPosterBtn;
 
     @Override
@@ -49,12 +54,42 @@ public class AdminCreateNewEventActivity extends AppCompatActivity {
         mSubmitBtn = findViewById(R.id.btn_admin_create_event_submit_btn);
         mEventTitle = findViewById(R.id.et_admin_create_event_title);
         mEventDesc = findViewById(R.id.et_admin_create_event_desc);
-        mEventDate = findViewById(R.id.dp_admin_create_event_date);
-        mEventTime = findViewById(R.id.tp_admin_create_event_time);
+//        mEventDate = findViewById(R.id.dp_admin_create_event_date);
+//        mEventTime = findViewById(R.id.tp_admin_create_event_time);
         mEventLoc = findViewById(R.id.et_admin_create_event_loc);
+        selectDateText = findViewById(R.id.te_admin_selectDateText);
+        selectTimeText = findViewById(R.id.te_admin_selectTimeText);
 //        mEventPosterBtn = findViewById(R.id.btn_admin_create_event_poster_upload_btn);
 
-        //            refer : https://cloud.google.com/firestore/docs/manage-data/add-data#javaandroid
+        DatePickerDialog.OnDateSetListener dateListener =new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH,month);
+                myCalendar.set(Calendar.DAY_OF_MONTH,day);
+
+                SimpleDateFormat dateFormat=new SimpleDateFormat("dd/mm/yyyy");
+                selectDateText.setText(dateFormat.format(myCalendar.getTime()));
+            }
+        };
+        selectDateText.setOnClickListener( view -> {
+                new DatePickerDialog(this,dateListener,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+        TimePickerDialog.OnTimeSetListener timeListener =new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                myCalendar.set(Calendar.HOUR_OF_DAY, hour);
+                myCalendar.set(Calendar.MINUTE,minute);
+
+                selectTimeText.setText(myCalendar.get(Calendar.HOUR_OF_DAY) + ": " + myCalendar.get(Calendar.MINUTE) + " hours");
+            }
+        };
+        selectTimeText.setOnClickListener( view -> {
+            new TimePickerDialog(this,timeListener,myCalendar.get(Calendar.HOUR_OF_DAY),myCalendar.get(Calendar.MINUTE), true).show();
+        });
+
+        //refer : https://cloud.google.com/firestore/docs/manage-data/add-data#javaandroid
         mSubmitBtn.setOnClickListener(view -> {
             Map<String,Object> data = new HashMap<>();
             data.put("Name",mEventTitle.getText().toString());
@@ -62,26 +97,14 @@ public class AdminCreateNewEventActivity extends AppCompatActivity {
             data.put("Venue", mEventLoc.getText().toString());
             data.put("Likes", 0);
             data.put("Participants", new ArrayList<>());
-            data.put("VenueCoordinates", new GeoPoint(0,0));
+            data.put("VenueCoordinates", new GeoPoint(0,0)); // TODO
+            data.put("Tags", new ArrayList<String>()); // TODO
+            data.put("ImageUrls", new ArrayList<String>()); // TODO
 
-            // refer : https://stackoverflow.com/questions/54927084/get-timestamp-from-datepicker-and-timepicker
-            int year = mEventDate.getYear();
-            int month = mEventDate.getMonth();
-            int day = mEventDate.getDayOfMonth();
-            int hour= mEventTime.getHour();
-            int minute = mEventTime.getMinute();
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month);
-            calendar.set(Calendar.DAY_OF_MONTH, day);
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            calendar.set(Calendar.SECOND, 0);
-            Long timeInMillis = calendar.getTimeInMillis();
-            // refer : https://stackoverflow.com/questions/63125153/kotlin-convert-date-or-calendar-to-firebase-timestamp
+            Long timeInMillis = myCalendar.getTimeInMillis();
             Timestamp timestamp = new Timestamp(new Date(timeInMillis));
             data.put("Time", timestamp);
+            // refer : https://stackoverflow.com/questions/63125153/kotlin-convert-date-or-calendar-to-firebase-timestamp
 
             String uuid = UUID.randomUUID().toString();
 
