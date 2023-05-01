@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                                 boolean userIsAdmin = Boolean.parseBoolean(document.getData().get("is_admin").toString());
                                 if (userIsAdmin) {
                                     Toast.makeText(LoginActivity.this, "Admin User signed in", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(),AdminEventsList.class);
+                                    Intent intent = new Intent(getApplicationContext(), AdminBaseActivity.class);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Non-Admin User signed in", Toast.LENGTH_SHORT).show();
@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                                                             if (userIsAdmin) {
                                                                 //            check if current user is admin
                                                                 Toast.makeText(LoginActivity.this, "Admin User signed in", Toast.LENGTH_SHORT).show();
-                                                                Intent intent = new Intent(getApplicationContext(),AdminEventsList.class);
+                                                                Intent intent = new Intent(getApplicationContext(), AdminBaseActivity.class);
                                                                 startActivity(intent);
                                                             } else {
                                                                 // regular user

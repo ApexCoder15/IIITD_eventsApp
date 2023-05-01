@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import javax.annotation.Nullable;
 
 public class AdminEventsList extends AppCompatActivity {
-
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore db;

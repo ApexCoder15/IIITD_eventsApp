@@ -17,6 +17,7 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
     MapFragment mapFragment = new MapFragment();
     EventsFragment eventsFragment = new EventsFragment();
     FeedFragment feedFragment = new FeedFragment();
+    ProfileFragment profileFragment = new ProfileFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,12 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.container, feedFragment)
+                        .commit();
+                return true;
+            case R.id.navigation_profile:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, profileFragment)
                         .commit();
                 return true;
         }
