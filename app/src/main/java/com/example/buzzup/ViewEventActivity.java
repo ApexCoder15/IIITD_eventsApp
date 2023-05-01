@@ -27,6 +27,7 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class ViewEventActivity extends AppCompatActivity
 {
@@ -72,7 +73,7 @@ public class ViewEventActivity extends AppCompatActivity
                         String tags = String.join(", ", eventTags);
                         eventTagsTV.setText(tags);
                         List<String> imageUrls = (List<String>) document.get("ImageUrls");
-                        String imageUrl = imageUrls.get(0);
+                        String imageUrl = imageUrls.get(new Random().nextInt(imageUrls.size()));
                         Picasso.get().load(imageUrl).into(eventImagesIV);
                         String eventDesc = (String) document.get("Description");
                         eventDescTV.setText(eventDesc);
