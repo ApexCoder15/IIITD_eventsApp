@@ -55,6 +55,7 @@ public class EventsFragment extends Fragment {
         if(user == null){
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivity(intent);
+            getActivity().finish();
         }
 
         searchBar = getActivity().findViewById(R.id.events_search_bar);

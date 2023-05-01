@@ -19,12 +19,19 @@
             app:iconifiedByDefault="false"
             app:queryHint = "Search for events..."/>
 
+        <Button
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/btn_admin_create_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Event"
+            />
+
         <ListView
             android:id="@+id/admin_events_list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:dividerHeight="5dp"/>
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

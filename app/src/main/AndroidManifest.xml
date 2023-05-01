@@ -33,9 +33,7 @@
         <activity
             android:name=".AdminCreateNewEventActivity"
             android:exported="false" />
-        <activity
-            android:name=".AdminEventsList"
-            android:exported="false" />
+
         <activity
             android:name=".ViewEventActivity"
             android:exported="false" />
