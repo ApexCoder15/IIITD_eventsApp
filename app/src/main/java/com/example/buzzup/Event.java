@@ -10,104 +10,104 @@ import java.util.Date;
 import java.util.List;
 
 public class Event {
-    String name, description, venue;
-    List<String> imageUrls;
-    long likes;
-    Date time;
-    GeoPoint venueCoordinates;
-    List<DocumentReference> participants;
-    List<String> tags;
+    String Name, Description, Venue;
+    List<String> ImageUrls;
+    long Likes;
+    Date Time;
+    GeoPoint VenueCoordinates;
+    List<DocumentReference> Participants;
+    List<String> Tags;
 
     public Event() {
     }
 
     public Event(String name, String description, long likes, Timestamp time, String venue, GeoPoint venueCoordinates, List<DocumentReference> participants, List<String> imageUrls, List<String> tags) {
-        this.name = name;
-        this.description = description;
-        this.likes = likes;
-        this.time = time.toDate();
-        this.venue = venue;
-        this.venueCoordinates = venueCoordinates;
-        this.participants = participants;
-        this.imageUrls = imageUrls;
-        this.tags = tags;
+        this.Name = name;
+        this.Description = description;
+        this.Likes = likes;
+        this.Time = time.toDate();
+        this.Venue = venue;
+        this.VenueCoordinates = venueCoordinates;
+        this.Participants = participants;
+        this.ImageUrls = imageUrls;
+        this.Tags = tags;
     }
 
     public String getName() {
-        return this.name;
+        return this.Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.Name = name;
     }
 
     public String getDescription() {
-        return this.description;
+        return this.Description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.Description = description;
     }
 
     public long getLikes() {
-        return this.likes;
+        return this.Likes;
     }
 
     public void setLikes(long likes) {
-        this.likes = likes;
+        this.Likes = likes;
     }
 
     public Date getTime() {
-        return this.time;
+        return this.Time;
     }
 
     public String getTimeSimple(){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss");
-        String date = simpleDateFormat.format(this.time);
+        String date = simpleDateFormat.format(this.Time);
         return date.substring(0, date.length()-3);
     }
 
     public void setTime(Date time) {
-        this.time = time;
+        this.Time = time;
     }
 
     public String getVenue() {
-        return this.venue;
+        return this.Venue;
     }
 
     public void setVenue(String venue) {
-        this.venue = venue;
+        this.Venue = venue;
     }
 
     public GeoPoint getVenueCoordinates() {
-        return this.venueCoordinates;
+        return this.VenueCoordinates;
     }
 
     public void setVenueCoordinates(GeoPoint venueCoordinates) {
-        this.venueCoordinates = venueCoordinates;
+        this.VenueCoordinates = venueCoordinates;
     }
 
     public List<DocumentReference> getParticipants() {
-        return this.participants;
+        return this.Participants;
     }
 
     public void setParticipants(ArrayList<DocumentReference> participants) {
-        this.participants = participants;
+        this.Participants = participants;
     }
 
     public List<String> getImageUrls() {
-        return this.imageUrls;
+        return this.ImageUrls;
     }
 
     public void setImageUrls(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
+        this.ImageUrls = imageUrls;
     }
 
     public List<String> getTags() {
-        return this.tags;
+        return this.Tags;
     }
 
     public void setTag(List<String> tags) {
-        this.tags = tags;
+        this.Tags = tags;
     }
 }

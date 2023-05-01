@@ -44,7 +44,7 @@ public class EventsNearMeAdapter extends RecyclerView.Adapter<EventsNearMeAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Event event = eventsNearMeList.get(position);
         holder.textView.setText(event.getName());
-        Picasso.get().load(event.imageUrls.get(0)).into(holder.imageView);
+        Picasso.get().load(event.ImageUrls.get(0)).into(holder.imageView);
 
         // on each holder, add an event listener
         holder.imageView.setOnClickListener(view->{
