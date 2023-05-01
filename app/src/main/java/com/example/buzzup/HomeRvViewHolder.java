@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class HomeRvViewHolder extends RecyclerView.ViewHolder
 {
-    ImageView eventImage;
-    TextView eventName;
+    static RecyclerView ChildRecyclerView;
+    static TextView tagName;
     public HomeRvViewHolder(@NonNull View itemView)
     {
         super(itemView);
-        eventName = itemView.findViewById(R.id.eventName);
-        eventImage = itemView.findViewById(R.id.eventImage);
+        ChildRecyclerView = itemView.findViewById(R.id.recyclerHome_Inner);
+        tagName = itemView.findViewById(R.id.fragment_home);
     }
 }

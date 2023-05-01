@@ -1,30 +1,33 @@
 package com.example.buzzup;
 
+import java.util.List;
+
 public class HomeRvModel
 {
-    String eventImageUrl = "";
-    String eventName = "";
+    List<HomeRvModelInner> tagEventLists;
+    String tagName;
 
-    public HomeRvModel(String e1, String e2)
+    public HomeRvModel(List<HomeRvModelInner> e1, String e2)
     {
-        this.eventImageUrl = e1;
-        this.eventName = e2;
+        this.tagEventLists = e1;
+        this.tagName = e2;
     }
 
-    public String getEventImageUrl()
+    public List<HomeRvModelInner> getTagEventLists()
     {
-        return this.eventImageUrl;
+        return this.tagEventLists;
     }
-    public void setEventImageUrl(String e)
+    public void setTagEventLists(List<HomeRvModelInner> e)
     {
-        this.eventImageUrl = e;
+        this.tagEventLists = e;
     }
-    public String getEventName()
+
+    public String getTagName()
     {
-        return this.eventName;
+        return this.tagName;
     }
-    public void setEventName(String e)
+    public void setTagName(String e)
     {
-        this.eventName = e;
+        this.tagName = e;
     }
 }

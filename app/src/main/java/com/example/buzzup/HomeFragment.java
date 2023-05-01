@@ -15,6 +15,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class HomeFragment extends Fragment
 {
@@ -35,7 +36,7 @@ public class HomeFragment extends Fragment
         //1. set stuff
         db = FirebaseFirestore.getInstance();
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerHome);
-        linearLayoutManager = new LinearLayoutManager(getActivity(), linearLayoutManager.HORIZONTAL, false);
+        linearLayoutManager = new LinearLayoutManager(getActivity(), linearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         eventData = new ArrayList<HomeRvModel>();
         /*eventData.add("Hello");
@@ -75,11 +76,30 @@ public class HomeFragment extends Fragment
                         }
                     }
                     //continue here
+                    for (String tag : dict.keySet())
+                    {
+                        List<HomeRvModelInner> eventInner = new ArrayList<>();
+                        ArrayList<Event> tagEventDetails = dict.get(tag);
+                        for (Event e : tagEventDetails)
+                        {
+                            eventInner.add(new HomeRvModelInner(e.getImageUrls().get(0), e.getName()));
+                        }
+                        eventData.add(new HomeRvModel(eventInner, tag));
+                    }
+                    /*List<HomeRvModelInner> eventInner = new ArrayList<>();
                     ArrayList<Event> tagEventDetails = dict.get("Literature");
                     for (Event e : tagEventDetails)
                     {
-                        eventData.add(new HomeRvModel(e.getImageUrls().get(0), e.getName()));
+                        eventInner.add(new HomeRvModelInner(e.getImageUrls().get(0), e.getName()));
                     }
+                    eventData.add(new HomeRvModel(eventInner, "Literature"));
+                    eventInner = new ArrayList<>();
+                    tagEventDetails = dict.get("Music");
+                    for (Event e : tagEventDetails)
+                    {
+                        eventInner.add(new HomeRvModelInner(e.getImageUrls().get(0), e.getName()));
+                    }
+                    eventData.add(new HomeRvModel(eventInner, "Music"));*/
                     homeRvAdapter = new HomeRvAdapter(getActivity(), eventData);
                     recyclerView.setAdapter(homeRvAdapter);
                 });
