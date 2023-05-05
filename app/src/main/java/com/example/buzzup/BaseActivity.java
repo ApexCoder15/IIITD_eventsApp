@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -13,11 +15,13 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
         .OnNavigationItemSelectedListener {
     BottomNavigationView bottomNavigationView;
 
+
     HomeFragment homeFragment = new HomeFragment();
     MapFragment mapFragment = new MapFragment();
     EventsFragment eventsFragment = new EventsFragment();
     FeedFragment feedFragment = new FeedFragment();
     ProfileFragment profileFragment = new ProfileFragment();
+    CalendarFragment calendarFragment = new CalendarFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,24 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
         getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.profile, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.navigation_profile:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, profileFragment)
+                        .commit();
+                return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -58,10 +80,10 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
                         .replace(R.id.container, feedFragment)
                         .commit();
                 return true;
-            case R.id.navigation_profile:
+            case R.id.cale:
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.container, profileFragment)
+                        .replace(R.id.container, calendarFragment)
                         .commit();
                 return true;
         }
