@@ -93,7 +93,9 @@ public class ViewEventActivity extends AppCompatActivity
                             Date eventDateTime = (((Timestamp) document.get("Time")).toDate());
                             eventDateTimeTV.setText(new StringBuilder().append("Date & Time : ").append(getTimeSimple(eventDateTime)).toString());
                             eventViewOnMapBtn.setOnClickListener(view-> {
-                                Toast.makeText(this, "TODO Open Map Fragment...", Toast.LENGTH_SHORT).show();
+                                Intent mapIntent = new Intent(getApplicationContext(), BaseActivity.class);
+                                mapIntent.putExtra("frgToLoad", FragmentConstants.MAP_FRAGMENT);
+                                startActivity(mapIntent);
                             });
                             break;
                         }

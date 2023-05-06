@@ -3,6 +3,7 @@ package com.example.buzzup;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,7 +32,21 @@ public class BaseActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
+        Intent intent = getIntent();
+        if (intent != null) {
+            int intentFragment = intent.getIntExtra("frgToLoad", FragmentConstants.DEFAULT_FRAGMENT);
+            switch (intentFragment) {
+                case FragmentConstants.MAP_FRAGMENT:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, mapFragment).commit();
+                    break;
+                default:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
+                    break;
+            }
+        }
+        else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
+        }
     }
 
     @Override

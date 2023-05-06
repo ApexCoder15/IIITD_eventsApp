@@ -28,7 +28,4 @@
         android:adjustViewBounds="true"
         android:layout_margin="4dp"
         />
-
-
-
 </LinearLayout>
