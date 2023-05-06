@@ -26,7 +26,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -43,7 +45,6 @@ public class CalendarFragment extends Fragment {
     ArrayList<Event> events;
     ListView eventsListView;
     EventAdapter eventAdapter;
-    TextView test_tv;
     Context ct;
     ArrayList<Event> originalEvents;
     ArrayList<String> eventIDS;
@@ -64,7 +65,6 @@ public class CalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
-        test_tv = view.findViewById(R.id.test_tv);
         ct = getActivity();
 
         eventsListView = view.findViewById(R.id.eventsList);
@@ -95,8 +95,6 @@ public class CalendarFragment extends Fragment {
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override   //i-year, i1-month, i2-day
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
-                events.clear();
-                eventIDS.clear();
                 originalEvents.clear();
                 i1 += 1;
                 String i_st = String.valueOf(i);
@@ -122,14 +120,24 @@ public class CalendarFragment extends Fragment {
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                                 String formatted_date = formatter.format(dt);
                                 if(selected_date.equals(formatted_date)){
-                                    //do stuff
-                                    Event event = doc.toObject(Event.class);
-                                    events.add(event);
+                                    // do stuff
+                                    Event event = new Event();
+                                    // set each field manually
+                                    event.setName((String)doc.get("Name"));
+                                    event.setDescription((String)doc.get("Description"));
+                                    event.setLikes((Long)doc.get("Likes"));
+                                    event.setParticipants((ArrayList<DocumentReference>)doc.get("Participants"));
+                                    event.setTime(((Timestamp)doc.get("Time")).toDate());
+                                    event.setVenue((String)doc.get("Venue"));
+                                    event.setVenueCoordinates((GeoPoint)doc.get("VenueCoordinates"));
+
                                     originalEvents.add(event);
                                     eventIDS.add(doc.getId());
                                 }
                             }
                             eventAdapter.setEventIDS(eventIDS);
+                            events.clear();
+                            events.addAll(originalEvents);
                             eventAdapter.notifyDataSetChanged();
                         }
                         else{

@@ -6,7 +6,10 @@
     tools:context=".CalendarFragment">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_margin="8dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Calendar"
         android:id="@+id/tv_cal"/>
@@ -17,20 +20,13 @@
         android:layout_below="@+id/tv_cal"
         android:id="@+id/cal"/>
 
-    <RelativeLayout
+    <ListView
+        android:layout_margin="8dp"
+        android:layout_below="@+id/cal"
+        android:id="@+id/eventsList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cal">
-        <ListView
-            android:id="@+id/eventsList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:dividerHeight="5dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/test_tv"
-            android:layout_below="@+id/eventsList"/>
-    </RelativeLayout>
+        android:layout_weight="1"
+        android:dividerHeight="5dp"/>
+
 </RelativeLayout>
