@@ -2,6 +2,8 @@ package com.example.buzzup;
 
 import static java.lang.Math.max;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -25,7 +28,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
 
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
 
@@ -226,6 +233,7 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
                                     userRSVPedEvents.add(db.collection("events").document(eventIDS.get(position)));
                                     rsvpButton.setText("unRSVP");
 
+
                                     db.runTransaction((Transaction.Function<Void>) transaction -> {
                                         DocumentReference userDocRef = db.collection("user").document(auth.getCurrentUser().getEmail());
                                         transaction.update(userDocRef, "rsvpEvents", userRSVPedEvents);
@@ -239,6 +247,20 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
                                                         ArrayList<DocumentReference> Participants = (ArrayList<DocumentReference>) documentSnapshot.get("Participants");
                                                         Participants.add(db.collection("user").document(auth.getCurrentUser().getEmail()));
 
+                                                        //Reminder
+                                                        Timestamp ts =(Timestamp) documentSnapshot.get("Time");
+                                                        String evt_name = (String) documentSnapshot.get("Name");
+                                                        Date date = ts.toDate();
+                                                        Calendar cal = Calendar.getInstance();
+                                                        cal.setTime(date);
+                                                        Intent it = new Intent(context, ReminderReceiver.class);
+                                                        it.putExtra("event_name", evt_name);
+                                                        it.putExtra("eventID", eventIDS.get(position));
+                                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, it, PendingIntent.FLAG_UPDATE_CURRENT);
+                                                        AlarmManager alarmM = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                                                        alarmM.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                                                        //Reminder end
+
                                                         eventDocRef.update("Participants", Participants)
                                                                 .addOnSuccessListener(unused -> Log.d("UPDATE", "Document updated."));
                                                     }
@@ -246,6 +268,7 @@ public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
                                         return null;
                                     }).addOnSuccessListener(unused -> Log.d("ADDED", "RSVP Event added successfully."))
                                             .addOnFailureListener(e -> Log.d("ADDED", "RSVP Event not added successfully."));
+
                                 }
                             }
                         }
