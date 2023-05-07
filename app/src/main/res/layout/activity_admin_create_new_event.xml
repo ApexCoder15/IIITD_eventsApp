@@ -64,6 +64,27 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Event Category"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:paddingLeft="3dp" />
+            <!-- type -->
+            <EditText
+                android:id="@+id/et_admin_create_event_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter event category ..."
+                android:textSize="20sp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Location"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -80,6 +101,32 @@
                 android:textSize="20sp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Map"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:paddingLeft="3dp" />
+                <TextView
+                    android:id="@+id/te_admin_selectVenueCoordinates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select on Map"
+                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:paddingLeft="3dp" />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -130,8 +177,30 @@
                     android:paddingLeft="3dp" />
             </LinearLayout>
 
-
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Event Poster"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:paddingLeft="3dp" />
+                <TextView
+                    android:id="@+id/te_admin_selectEventPoster"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Event Poster"
+                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:paddingLeft="3dp" />
+            </LinearLayout>
 
         </LinearLayout>
 

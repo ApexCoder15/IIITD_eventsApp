@@ -2,6 +2,7 @@ package com.example.buzzup;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,13 +36,17 @@ public class AdminCreateNewEventActivity extends AppCompatActivity {
     private Button mSubmitBtn;
     private EditText mEventTitle;
     private EditText mEventDesc;
-//    private DatePicker mEventDate;
-    private TimePicker mEventTime;
     private EditText mEventLoc;
     private TextView selectDateText;
     private TextView selectTimeText;
+    private TextView mEventCategory;
+    private TextView selectEventPosterText;
+    private TextView selectMapCoordsText;
+
+    private double latitude = 0;
+    private double longitude = 0;
+
     final Calendar myCalendar= Calendar.getInstance();
-//    private Button mEventPosterBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +60,14 @@ public class AdminCreateNewEventActivity extends AppCompatActivity {
         mSubmitBtn = findViewById(R.id.btn_admin_create_event_submit_btn);
         mEventTitle = findViewById(R.id.et_admin_create_event_title);
         mEventDesc = findViewById(R.id.et_admin_create_event_desc);
-//        mEventDate = findViewById(R.id.dp_admin_create_event_date);
-//        mEventTime = findViewById(R.id.tp_admin_create_event_time);
         mEventLoc = findViewById(R.id.et_admin_create_event_loc);
+        mEventCategory = findViewById(R.id.et_admin_create_event_category);
         selectDateText = findViewById(R.id.te_admin_selectDateText);
         selectTimeText = findViewById(R.id.te_admin_selectTimeText);
-//        mEventPosterBtn = findViewById(R.id.btn_admin_create_event_poster_upload_btn);
+        selectEventPosterText = findViewById(R.id.te_admin_selectEventPoster);
+        selectMapCoordsText = findViewById(R.id.te_admin_selectVenueCoordinates);
+
+
 
         DatePickerDialog.OnDateSetListener dateListener =new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -89,17 +97,31 @@ public class AdminCreateNewEventActivity extends AppCompatActivity {
             new TimePickerDialog(this,timeListener,myCalendar.get(Calendar.HOUR_OF_DAY),myCalendar.get(Calendar.MINUTE), true).show();
         });
 
+        selectMapCoordsText.setOnClickListener(view->{
+            Intent intent = new Intent(getApplicationContext(), GetLocationFromMap.class);
+            startActivityForResult(intent, RequestCodes.MAP_REQUEST_CODE);
+        });
+
         //refer : https://cloud.google.com/firestore/docs/manage-data/add-data#javaandroid
         mSubmitBtn.setOnClickListener(view -> {
+
+            String eventCategory = mEventCategory.getText().toString();
+            List<String> eventTags = new ArrayList<>();
+            eventTags.add(eventCategory);
+
+            String defaultImageLink = "https://i.insider.com/602ee9ced3ad27001837f2ac?width=700";
+            List<String> eventImageUrls = new ArrayList<>();
+            eventImageUrls.add(defaultImageLink);
+
             Map<String,Object> data = new HashMap<>();
             data.put("Name",mEventTitle.getText().toString());
             data.put("Description",mEventDesc.getText().toString());
             data.put("Venue", mEventLoc.getText().toString());
             data.put("Likes", 0);
             data.put("Participants", new ArrayList<>());
-            data.put("VenueCoordinates", new GeoPoint(0,0)); // TODO
-            data.put("Tags", new ArrayList<String>()); // TODO
-            data.put("ImageUrls", new ArrayList<String>()); // TODO
+            data.put("VenueCoordinates", new GeoPoint(latitude,longitude)); // TODO
+            data.put("Tags", eventTags);
+            data.put("ImageUrls", eventImageUrls); // TODO
 
             Long timeInMillis = myCalendar.getTimeInMillis();
             Timestamp timestamp = new Timestamp(new Date(timeInMillis));
@@ -120,5 +142,21 @@ public class AdminCreateNewEventActivity extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(), "Image", Toast.LENGTH_SHORT).show();
 //            }
 //        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RequestCodes.MAP_REQUEST_CODE && resultCode == RESULT_OK) {
+            double lat = data.getDoubleExtra("latitude", 0.0);
+            double lon = data.getDoubleExtra("longitude", 0.0);
+
+            // display the coordinates on screen and
+            this.latitude = lat;
+            this.longitude = lon;
+            selectMapCoordsText.setText(new StringBuilder("").append(this.latitude).append(",\n").append(this.longitude).toString());
+        }
     }
 }
